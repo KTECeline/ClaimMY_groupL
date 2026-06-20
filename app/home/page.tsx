@@ -28,7 +28,7 @@ export default function HomePage() {
   const continueLabel = activeClaim?.typeLabel ?? 'KWSP Dividend Balance'
   const continueSubtitle = activeClaim
     ? `${activeClaim.institution} · Continue claim`
-    : 'Step 3 of 4 · Upload documents'
+    : 'View progress & timeline'
   const continueHref = activeClaim ? '/claim/wizard/step-1' : '/track'
 
   return (

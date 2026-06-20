@@ -11,6 +11,7 @@ import { AppButton } from '@/components/ui/app-button'
 import { PageTransition } from '@/components/common/page-transition'
 import { useLanguage } from '@/context/language-context'
 import { useClaim } from '@/context/claim-context'
+import { DEMO_IC } from '@/lib/mock-data'
 
 export default function ClaimDetailPage({
   params,
@@ -20,7 +21,7 @@ export default function ClaimDetailPage({
   const { id } = use(params)
   const router = useRouter()
   const { t } = useLanguage()
-  const { getClaim, setActiveClaim, resetWizard } = useClaim()
+  const { getClaim, setActiveClaim, resetWizard, updateWizard } = useClaim()
   const claim = getClaim(id)
 
   useEffect(() => {
@@ -38,6 +39,10 @@ export default function ClaimDetailPage({
   function startClaim() {
     setActiveClaim(claim!)
     resetWizard()
+    // If this claim belongs to someone other than the main user, pre-select family mode
+    if (claim!.ic !== DEMO_IC) {
+      updateWizard({ mode: 'family' })
+    }
     router.push('/claim/wizard/step-1')
   }
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check, Landmark } from 'lucide-react'
+import { Check, Landmark, Users } from 'lucide-react'
 import { StepWrapper, WizardFooter } from '@/components/wizard/step-wrapper'
 import { AppButton } from '@/components/ui/app-button'
 import { Field } from '@/components/wizard/field'
@@ -29,8 +29,20 @@ export default function Step1() {
     }
   }
 
+  const isForOther = wizard.mode === 'family' || wizard.mode === 'deceased'
+
   return (
     <StepWrapper title={t('wiz.s1.title')} subtitle={t('wiz.s1.sub')}>
+      {/* Banner shown when claiming on behalf of someone else */}
+      {isForOther && activeClaim && (
+        <div className="mb-4 flex items-center gap-2.5 rounded-2xl bg-pine-soft px-4 py-3">
+          <Users className="size-4 shrink-0 text-pine" />
+          <p className="text-sm font-semibold text-pine">
+            Claiming on behalf of{' '}
+            <span className="font-bold">{activeClaim.name}</span>
+          </p>
+        </div>
+      )}
       <div className="flex flex-col gap-4">
         <Field
           label={t('wiz.s1.name')}

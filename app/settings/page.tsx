@@ -23,6 +23,7 @@ import { PageTransition } from '@/components/common/page-transition'
 import { AppButton } from '@/components/ui/app-button'
 import { Field } from '@/components/wizard/field'
 import { useLanguage } from '@/context/language-context'
+import { useClaim } from '@/context/claim-context'
 import { LANGUAGES, type Lang } from '@/lib/i18n/dictionary'
 import { cn } from '@/lib/utils'
 
@@ -63,6 +64,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function SettingsPage() {
   const router = useRouter()
   const { t, lang, setLang } = useLanguage()
+  const { updateWizard } = useClaim()
   const [newAlerts, setNewAlerts] = useState(true)
   const [statusAlerts, setStatusAlerts] = useState(true)
   const [biometric, setBiometric] = useState(false)
@@ -250,7 +252,10 @@ export default function SettingsPage() {
                 variant="primary"
                 size="block"
                 className="mt-6"
-                onClick={() => setProfileOpen(false)}
+                onClick={() => {
+                  updateWizard({ name: profileName, phone: profilePhone, email: profileEmail })
+                  setProfileOpen(false)
+                }}
               >
                 <Check className="size-5" />
                 Save changes

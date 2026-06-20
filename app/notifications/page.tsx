@@ -10,7 +10,8 @@ import { TopBar } from '@/components/layout/top-bar'
 import { PageTransition } from '@/components/common/page-transition'
 import { Amount } from '@/components/common/amount'
 import { useLanguage } from '@/context/language-context'
-import { NOTIFICATIONS, type AppNotification } from '@/lib/mock-data'
+import { useClaim } from '@/context/claim-context'
+import { NOTIFICATIONS, DEMO_IC, type AppNotification } from '@/lib/mock-data'
 import { cn } from '@/lib/utils'
 
 const NOTIF_ROUTES: Record<string, string> = {
@@ -70,13 +71,16 @@ function NotifRow({ n, onTap }: { n: AppNotification; onTap?: () => void }) {
 export default function NotificationsPage() {
   const router = useRouter()
   const { t } = useLanguage()
+  const { search } = useClaim()
   const [items, setItems] = useState(NOTIFICATIONS)
 
   function handleTap(n: AppNotification) {
-    // mark read
     setItems((arr) => arr.map((x) => x.id === n.id ? { ...x, unread: false } : x))
     const route = NOTIF_ROUTES[n.type]
-    if (route) router.push(route)
+    if (!route) return
+    // "found" notifications: ensure results are populated before navigating
+    if (n.type === 'found') search(DEMO_IC)
+    router.push(route)
   }
 
   const today = items.filter((n) => n.group === 'today')
