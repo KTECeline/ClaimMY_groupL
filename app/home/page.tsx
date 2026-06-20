@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'motion/react'
-import { Users, FileText, Bell, HelpCircle, ChevronRight } from 'lucide-react'
+import { Users, FileText, Bell, Settings, ChevronRight } from 'lucide-react'
 import { MobileContainer } from '@/components/layout/mobile-container'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { BrandWordmark } from '@/components/common/brand-mark'
@@ -11,16 +11,25 @@ import { ICSearchInput } from '@/components/search/ic-search-input'
 import { Amount } from '@/components/common/amount'
 import { PageTransition } from '@/components/common/page-transition'
 import { useLanguage } from '@/context/language-context'
+import { useClaim } from '@/context/claim-context'
 
 const quickActions = [
   { href: '/family', icon: Users, key: 'home.q.family' },
   { href: '/track', icon: FileText, key: 'home.q.track' },
   { href: '/notifications', icon: Bell, key: 'home.q.notify' },
-  { href: '/settings', icon: HelpCircle, key: 'home.q.help' },
+  { href: '/settings', icon: Settings, key: 'home.q.help' },
 ]
 
 export default function HomePage() {
   const { t } = useLanguage()
+  const { activeClaim } = useClaim()
+
+  // If a real claim is in progress show it; otherwise show the demo placeholder
+  const continueLabel = activeClaim?.typeLabel ?? 'KWSP Dividend Balance'
+  const continueSubtitle = activeClaim
+    ? `${activeClaim.institution} · Continue claim`
+    : 'Step 3 of 4 · Upload documents'
+  const continueHref = activeClaim ? '/claim/wizard/step-1' : '/track'
 
   return (
     <MobileContainer>
@@ -39,7 +48,7 @@ export default function HomePage() {
         </h1>
       </div>
 
-      <PageTransition className="flex flex-1 flex-col">
+      <PageTransition className="relative z-10 flex flex-1 flex-col">
         <main className="flex-1 px-5 pb-6">
           {/* Search card pulled up over the header */}
           <div className="-mt-12">
@@ -91,12 +100,12 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Continue claim */}
+          {/* Continue where you left off */}
           <h2 className="mt-7 mb-3 font-display text-base font-bold text-foreground">
             {t('home.recent')}
           </h2>
           <Link
-            href="/track"
+            href={continueHref}
             className="flex items-center gap-3 rounded-2xl border border-gold/30 bg-gold-soft/50 p-4 transition-colors hover:bg-gold-soft"
           >
             <span className="flex size-11 items-center justify-center rounded-xl bg-gold/15 text-gold">
@@ -104,10 +113,10 @@ export default function HomePage() {
             </span>
             <span className="flex-1">
               <span className="block text-sm font-bold text-foreground">
-                KWSP Dividend Balance
+                {continueLabel}
               </span>
               <span className="block text-xs text-muted-foreground">
-                Step 3 of 4 · Upload documents
+                {continueSubtitle}
               </span>
             </span>
             <ChevronRight className="size-5 text-muted-foreground" />

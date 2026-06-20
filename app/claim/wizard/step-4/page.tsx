@@ -11,8 +11,7 @@ import { useClaim } from '@/context/claim-context'
 import { cn } from '@/lib/utils'
 
 function genRef() {
-  const part = () =>
-    Math.random().toString(36).slice(2, 6).toUpperCase()
+  const part = () => Math.random().toString(36).slice(2, 6).toUpperCase()
   return `CLM-${part()}-2026`
 }
 
@@ -45,7 +44,14 @@ function Row({
 export default function Step4() {
   const router = useRouter()
   const { t } = useLanguage()
-  const { activeClaim, wizard, setLastRef } = useClaim()
+  const {
+    activeClaim,
+    wizard,
+    setLastRef,
+    addSubmittedClaim,
+    setEditFromReview,
+    resetWizard,
+  } = useClaim()
   const [agree, setAgree] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
@@ -55,10 +61,34 @@ export default function Step4() {
 
   if (!activeClaim) return null
 
+  function goEdit(step: string) {
+    setEditFromReview(true)
+    router.push(`/claim/wizard/${step}`)
+  }
+
   function submit() {
     setSubmitting(true)
     const ref = genRef()
     setLastRef(ref)
+
+    // Add the newly submitted claim to the live tracker list
+    const today = new Date()
+    const dateLabel = today.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    })
+    addSubmittedClaim({
+      id: ref,
+      ref,
+      type: activeClaim.typeLabel,
+      institution: activeClaim.institution,
+      amount: activeClaim.amount,
+      submittedOn: dateLabel,
+      stage: 0,
+      status: 'active',
+    })
+
     setTimeout(() => router.push('/claim/success'), 1600)
   }
 
@@ -67,14 +97,17 @@ export default function Step4() {
   return (
     <StepWrapper title={t('wiz.s4.title')} subtitle={t('wiz.s4.sub')}>
       <div className="divide-y divide-border rounded-2xl bg-card px-4 ring-1 ring-border">
-        <Row label={t('wiz.s4.claimant')} onEdit={() => router.push('/claim/wizard/step-1')}>
+        <Row label={t('wiz.s4.claimant')} onEdit={() => goEdit('step-1')}>
           <p>{wizard.name}</p>
           <p className="font-mono text-sm tabular-nums text-muted-foreground">{wizard.ic}</p>
         </Row>
-        <Row label={t('wiz.s4.claiming')} onEdit={() => router.push('/claim/wizard/step-2')}>
+        <Row label={t('wiz.s4.bank')} onEdit={() => goEdit('step-1')}>
+          <p className="text-sm">{wizard.bankAccount}</p>
+        </Row>
+        <Row label={t('wiz.s4.claiming')} onEdit={() => goEdit('step-2')}>
           {modeLabel}
         </Row>
-        <Row label={t('wiz.s4.docs')} onEdit={() => router.push('/claim/wizard/step-3')}>
+        <Row label={t('wiz.s4.docs')} onEdit={() => goEdit('step-3')}>
           {wizard.docsUploaded.length} {t('wiz.s4.docs').toLowerCase()}
         </Row>
         <Row label={t('wiz.s4.payout')}>

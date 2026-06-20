@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
-import { SearchX, Bell, RotateCcw, PartyPopper } from 'lucide-react'
+import { SearchX, Bell, RotateCcw, PartyPopper, ArrowUpDown } from 'lucide-react'
 import { MobileContainer } from '@/components/layout/mobile-container'
 import { TopBar } from '@/components/layout/top-bar'
 import { ResultCard } from '@/components/search/result-card'
@@ -17,10 +17,19 @@ const container = {
   animate: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 }
 
+type SortKey = 'amount' | 'date' | 'institution'
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: 'amount', label: 'Amount' },
+  { key: 'date', label: 'Year' },
+  { key: 'institution', label: 'Institution' },
+]
+
 export default function ResultsPage() {
   const router = useRouter()
   const { t } = useLanguage()
   const { searchedIC, results } = useClaim()
+  const [sort, setSort] = useState<SortKey>('amount')
 
   useEffect(() => {
     if (!searchedIC) router.replace('/home')
@@ -87,18 +96,38 @@ export default function ResultsPage() {
             </p>
           </motion.div>
 
-          <p className="mb-3 mt-6 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {t('results.sortBy')}
-          </p>
+          {/* Sort toggle */}
+          <div className="mt-6 flex items-center gap-2">
+            <ArrowUpDown className="size-3.5 shrink-0 text-muted-foreground" />
+            <div className="flex gap-1">
+              {SORT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setSort(opt.key)}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                    sort === opt.key
+                      ? 'bg-pine text-pine-foreground'
+                      : 'bg-muted text-muted-foreground hover:bg-secondary'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <motion.div
             variants={container}
             initial="initial"
             animate="animate"
-            className="flex flex-col gap-3"
+            className="mt-3 flex flex-col gap-3"
           >
             {[...results]
-              .sort((a, b) => b.amount - a.amount)
+              .sort((a, b) => {
+                if (sort === 'amount') return b.amount - a.amount
+                if (sort === 'date') return b.year - a.year
+                return a.institution.localeCompare(b.institution)
+              })
               .map((claim) => (
                 <ResultCard key={claim.id} claim={claim} />
               ))}

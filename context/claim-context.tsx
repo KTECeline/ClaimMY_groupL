@@ -7,7 +7,7 @@ import {
   useMemo,
   type ReactNode,
 } from 'react'
-import { CLAIMS, DEMO_IC, type Claim } from '@/lib/mock-data'
+import { CLAIMS, FAMILY_CLAIMS, DEMO_IC, type Claim, type TrackedClaim } from '@/lib/mock-data'
 
 export type ClaimMode = 'self' | 'family' | 'deceased'
 
@@ -16,8 +16,9 @@ type WizardData = {
   ic: string
   phone: string
   email: string
+  bankAccount: string
   mode: ClaimMode
-  docsUploaded: string[] // doc keys
+  docsUploaded: string[]
 }
 
 const defaultWizard: WizardData = {
@@ -25,6 +26,7 @@ const defaultWizard: WizardData = {
   ic: DEMO_IC,
   phone: '012-345 6789',
   email: 'ahmad.razali@email.com',
+  bankAccount: 'Maybank · 1234 5678 9012',
   mode: 'self',
   docsUploaded: [],
 }
@@ -41,6 +43,10 @@ type ClaimContextValue = {
   resetWizard: () => void
   lastRef: string | null
   setLastRef: (ref: string) => void
+  submittedClaims: TrackedClaim[]
+  addSubmittedClaim: (claim: TrackedClaim) => void
+  editFromReview: boolean
+  setEditFromReview: (v: boolean) => void
 }
 
 const ClaimContext = createContext<ClaimContextValue | null>(null)
@@ -51,6 +57,8 @@ export function ClaimProvider({ children }: { children: ReactNode }) {
   const [activeClaim, setActiveClaim] = useState<Claim | null>(null)
   const [wizard, setWizard] = useState<WizardData>(defaultWizard)
   const [lastRef, setLastRef] = useState<string | null>(null)
+  const [submittedClaims, setSubmittedClaims] = useState<TrackedClaim[]>([])
+  const [editFromReview, setEditFromReview] = useState(false)
 
   const value = useMemo<ClaimContextValue>(
     () => ({
@@ -58,12 +66,19 @@ export function ClaimProvider({ children }: { children: ReactNode }) {
       results,
       search: (ic: string) => {
         setSearchedIC(ic)
-        // Demo IC returns results; everything else is empty (empty-state demo).
         const normalized = ic.replace(/\D/g, '')
         const demoNormalized = DEMO_IC.replace(/\D/g, '')
-        setResults(normalized === demoNormalized ? CLAIMS : [])
+        // Check main demo IC first, then family member ICs
+        if (normalized === demoNormalized) {
+          setResults(CLAIMS)
+        } else if (FAMILY_CLAIMS[normalized]) {
+          setResults(FAMILY_CLAIMS[normalized])
+        } else {
+          setResults([])
+        }
       },
-      getClaim: (id: string) => CLAIMS.find((c) => c.id === id),
+      getClaim: (id: string) =>
+        [...CLAIMS, ...Object.values(FAMILY_CLAIMS).flat()].find((c) => c.id === id),
       activeClaim,
       setActiveClaim,
       wizard,
@@ -71,8 +86,13 @@ export function ClaimProvider({ children }: { children: ReactNode }) {
       resetWizard: () => setWizard(defaultWizard),
       lastRef,
       setLastRef,
+      submittedClaims,
+      addSubmittedClaim: (claim) =>
+        setSubmittedClaims((prev) => [claim, ...prev]),
+      editFromReview,
+      setEditFromReview,
     }),
-    [searchedIC, results, activeClaim, wizard, lastRef],
+    [searchedIC, results, activeClaim, wizard, lastRef, submittedClaims, editFromReview],
   )
 
   return <ClaimContext.Provider value={value}>{children}</ClaimContext.Provider>

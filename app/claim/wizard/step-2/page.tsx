@@ -9,6 +9,7 @@ import { useLanguage } from '@/context/language-context'
 import { useClaim, type ClaimMode } from '@/context/claim-context'
 import { cn } from '@/lib/utils'
 
+
 const OPTIONS: { mode: ClaimMode; icon: typeof User; key: string }[] = [
   { mode: 'self', icon: User, key: 'self' },
   { mode: 'family', icon: Users, key: 'family' },
@@ -18,11 +19,20 @@ const OPTIONS: { mode: ClaimMode; icon: typeof User; key: string }[] = [
 export default function Step2() {
   const router = useRouter()
   const { t } = useLanguage()
-  const { activeClaim, wizard, updateWizard } = useClaim()
+  const { activeClaim, wizard, updateWizard, editFromReview, setEditFromReview } = useClaim()
 
   useEffect(() => {
     if (!activeClaim) router.replace('/home')
   }, [activeClaim, router])
+
+  function onContinue() {
+    if (editFromReview) {
+      setEditFromReview(false)
+      router.push('/claim/wizard/step-4')
+    } else {
+      router.push('/claim/wizard/step-3')
+    }
+  }
 
   return (
     <StepWrapper title={t('wiz.s2.title')} subtitle={t('wiz.s2.sub')}>
@@ -77,9 +87,9 @@ export default function Step2() {
           variant="primary"
           size="md"
           className="flex-1"
-          onClick={() => router.push('/claim/wizard/step-3')}
+          onClick={onContinue}
         >
-          {t('wiz.next')}
+          {editFromReview ? 'Save & return' : t('wiz.next')}
         </AppButton>
       </WizardFooter>
     </StepWrapper>

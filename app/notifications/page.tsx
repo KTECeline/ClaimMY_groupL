@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
 import { Bell, Coins, CircleCheck, Clock, Info, BellOff } from 'lucide-react'
 import { MobileContainer } from '@/components/layout/mobile-container'
@@ -11,6 +12,13 @@ import { Amount } from '@/components/common/amount'
 import { useLanguage } from '@/context/language-context'
 import { NOTIFICATIONS, type AppNotification } from '@/lib/mock-data'
 import { cn } from '@/lib/utils'
+
+const NOTIF_ROUTES: Record<string, string> = {
+  found: '/results',
+  status: '/track',
+  reminder: '/track',
+  system: '',
+}
 
 const ICONS = {
   found: Coins,
@@ -26,13 +34,17 @@ const TONES = {
   system: 'bg-muted text-muted-foreground',
 }
 
-function NotifRow({ n }: { n: AppNotification }) {
+function NotifRow({ n, onTap }: { n: AppNotification; onTap?: () => void }) {
   const Icon = ICONS[n.type]
+  const route = NOTIF_ROUTES[n.type]
   return (
     <div
+      role={route ? 'button' : undefined}
+      onClick={onTap}
       className={cn(
         'relative flex gap-3 rounded-2xl p-4 ring-1 transition-colors',
         n.unread ? 'bg-card ring-border' : 'bg-transparent ring-transparent',
+        route && 'cursor-pointer active:opacity-70',
       )}
     >
       <span className={cn('flex size-11 shrink-0 items-center justify-center rounded-xl', TONES[n.type])}>
@@ -56,8 +68,16 @@ function NotifRow({ n }: { n: AppNotification }) {
 }
 
 export default function NotificationsPage() {
+  const router = useRouter()
   const { t } = useLanguage()
   const [items, setItems] = useState(NOTIFICATIONS)
+
+  function handleTap(n: AppNotification) {
+    // mark read
+    setItems((arr) => arr.map((x) => x.id === n.id ? { ...x, unread: false } : x))
+    const route = NOTIF_ROUTES[n.type]
+    if (route) router.push(route)
+  }
 
   const today = items.filter((n) => n.group === 'today')
   const earlier = items.filter((n) => n.group === 'earlier')
@@ -101,7 +121,7 @@ export default function NotificationsPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.05 }}
                       >
-                        <NotifRow n={n} />
+                        <NotifRow n={n} onTap={() => handleTap(n)} />
                       </motion.div>
                     ))}
                   </div>
@@ -114,7 +134,7 @@ export default function NotificationsPage() {
                   </h2>
                   <div className="flex flex-col gap-2">
                     {earlier.map((n) => (
-                      <NotifRow key={n.id} n={n} />
+                      <NotifRow key={n.id} n={n} onTap={() => handleTap(n)} />
                     ))}
                   </div>
                 </section>

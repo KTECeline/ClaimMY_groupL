@@ -27,7 +27,7 @@ export default function SearchingPage() {
       setTimeout(() => setDone(i + 1), 350 + i * 320),
     )
     const finish = setTimeout(() => {
-      router.replace(results.length > 0 ? '/results' : '/results')
+      router.replace('/results')
     }, 350 + sources.length * 320 + 400)
     return () => {
       timers.forEach(clearTimeout)

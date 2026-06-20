@@ -52,7 +52,7 @@ const en: Dict = {
   'home.q.family': 'Family Mode',
   'home.q.track': 'Track claims',
   'home.q.notify': 'Alerts',
-  'home.q.help': 'Help',
+  'home.q.help': 'Settings',
 
   // Results
   'results.title': 'Search results',
@@ -95,6 +95,7 @@ const en: Dict = {
   'wiz.s1.ic': 'IC number',
   'wiz.s1.phone': 'Mobile number',
   'wiz.s1.email': 'Email address',
+  'wiz.s1.bank': 'Bank account for payout',
   'wiz.s1.confirm': 'I confirm the details above are correct',
   'wiz.s2.title': 'How are you claiming?',
   'wiz.s2.sub': 'This helps us ask for the right documents.',
@@ -117,6 +118,7 @@ const en: Dict = {
   'wiz.s4.claimant': 'Claimant',
   'wiz.s4.claiming': 'Claiming',
   'wiz.s4.docs': 'Documents',
+  'wiz.s4.bank': 'Payout bank account',
   'wiz.s4.payout': 'Payout to',
   'wiz.s4.agree': 'I declare the information is true and complete.',
 
@@ -242,7 +244,7 @@ const bm: Dict = {
   'home.q.family': 'Mod Keluarga',
   'home.q.track': 'Jejak tuntutan',
   'home.q.notify': 'Peringatan',
-  'home.q.help': 'Bantuan',
+  'home.q.help': 'Tetapan',
 
   'results.title': 'Keputusan carian',
   'results.found': 'Berita baik — kami jumpa wang atas nama anda',
@@ -282,6 +284,7 @@ const bm: Dict = {
   'wiz.s1.ic': 'Nombor IC',
   'wiz.s1.phone': 'Nombor telefon',
   'wiz.s1.email': 'Alamat e-mel',
+  'wiz.s1.bank': 'Akaun bank untuk bayaran',
   'wiz.s1.confirm': 'Saya sahkan butiran di atas adalah betul',
   'wiz.s2.title': 'Bagaimana anda menuntut?',
   'wiz.s2.sub': 'Ini membantu kami minta dokumen yang betul.',
@@ -304,6 +307,7 @@ const bm: Dict = {
   'wiz.s4.claimant': 'Penuntut',
   'wiz.s4.claiming': 'Menuntut',
   'wiz.s4.docs': 'Dokumen',
+  'wiz.s4.bank': 'Akaun bank bayaran',
   'wiz.s4.payout': 'Bayaran kepada',
   'wiz.s4.agree': 'Saya isytihar maklumat ini benar dan lengkap.',
 

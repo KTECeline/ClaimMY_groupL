@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Check, FileText, FolderOpen } from 'lucide-react'
+import { Check, FileText, FolderOpen, Copy, CheckCheck } from 'lucide-react'
 import { MobileContainer } from '@/components/layout/mobile-container'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { TopBar } from '@/components/layout/top-bar'
 import { PageTransition } from '@/components/common/page-transition'
 import { Amount } from '@/components/common/amount'
 import { useLanguage } from '@/context/language-context'
+import { useClaim } from '@/context/claim-context'
 import { TRACKED_CLAIMS, type TrackedClaim } from '@/lib/mock-data'
 import { cn } from '@/lib/utils'
 
@@ -98,16 +99,46 @@ function ClaimCard({ claim }: { claim: TrackedClaim }) {
   )
 }
 
+function LastRefBanner({ refCode }: { refCode: string }) {
+  const [copied, setCopied] = useState(false)
+  function copy() {
+    navigator.clipboard?.writeText(refCode)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  return (
+    <div className="mx-5 mt-3 flex items-center justify-between rounded-2xl bg-pine px-4 py-3 text-pine-foreground">
+      <div>
+        <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-pine-foreground/60">
+          Latest submission
+        </p>
+        <p className="font-mono text-sm font-bold tracking-wider">{refCode}</p>
+      </div>
+      <button
+        onClick={copy}
+        className="flex items-center gap-1.5 rounded-full bg-pine-foreground/15 px-3 py-1.5 text-xs font-semibold"
+      >
+        {copied ? <CheckCheck className="size-3.5" /> : <Copy className="size-3.5" />}
+        {copied ? 'Copied' : 'Copy'}
+      </button>
+    </div>
+  )
+}
+
 export default function TrackPage() {
   const { t } = useLanguage()
+  const { submittedClaims, lastRef } = useClaim()
   const [tab, setTab] = useState<'active' | 'done'>('active')
 
-  const filtered = TRACKED_CLAIMS.filter((c) => c.status === tab)
+  // Merge live submitted claims with the static mock list
+  const allClaims = [...submittedClaims, ...TRACKED_CLAIMS]
+  const filtered = allClaims.filter((c) => c.status === tab)
 
   return (
     <MobileContainer>
       <TopBar title={t('track.title')} back={false} />
       <PageTransition className="flex flex-1 flex-col">
+        {lastRef && <LastRefBanner refCode={lastRef} />}
         <main className="flex-1 px-5 pb-6">
           {/* Tabs */}
           <div className="mt-1 flex gap-1 rounded-full bg-muted p-1">

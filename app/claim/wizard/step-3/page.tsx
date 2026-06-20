@@ -16,7 +16,7 @@ const DOC_KEYS = ['mykad', 'bank'] as const
 export default function Step3() {
   const router = useRouter()
   const { t } = useLanguage()
-  const { activeClaim, wizard, updateWizard } = useClaim()
+  const { activeClaim, wizard, updateWizard, editFromReview, setEditFromReview } = useClaim()
   const [states, setStates] = useState<Record<string, DocState>>({})
 
   useEffect(() => {
@@ -116,9 +116,12 @@ export default function Step3() {
           size="md"
           className="flex-1"
           disabled={!allDone}
-          onClick={() => router.push('/claim/wizard/step-4')}
+          onClick={() => {
+            if (editFromReview) setEditFromReview(false)
+            router.push('/claim/wizard/step-4')
+          }}
         >
-          {t('wiz.next')}
+          {editFromReview ? 'Save & return' : t('wiz.next')}
         </AppButton>
       </WizardFooter>
     </StepWrapper>

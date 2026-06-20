@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'motion/react'
 import { Plus, ChevronRight, X, Search } from 'lucide-react'
 import { MobileContainer } from '@/components/layout/mobile-container'
@@ -11,6 +12,7 @@ import { AppButton } from '@/components/ui/app-button'
 import { Amount } from '@/components/common/amount'
 import { Field } from '@/components/wizard/field'
 import { useLanguage } from '@/context/language-context'
+import { useClaim } from '@/context/claim-context'
 import { FAMILY, FAMILY_TOTAL } from '@/lib/mock-data'
 import { formatIC } from '@/lib/utils'
 
@@ -23,11 +25,24 @@ const RELATIONSHIPS = [
 ]
 
 export default function FamilyPage() {
+  const router = useRouter()
   const { t } = useLanguage()
+  const { search } = useClaim()
   const [sheetOpen, setSheetOpen] = useState(false)
   const [name, setName] = useState('')
   const [ic, setIc] = useState('')
   const [rel, setRel] = useState(RELATIONSHIPS[0])
+
+  function searchMember(memberIc: string) {
+    search(memberIc)
+    router.push('/searching')
+  }
+
+  function saveAndSearch() {
+    setSheetOpen(false)
+    search(ic)
+    router.push('/searching')
+  }
 
   return (
     <MobileContainer>
@@ -59,6 +74,7 @@ export default function FamilyPage() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.06 }}
+                onClick={() => searchMember(m.ic)}
                 className="flex items-center gap-3 rounded-2xl bg-card p-4 text-left ring-1 ring-border transition-colors hover:ring-pine/40"
               >
                 <span
@@ -166,7 +182,7 @@ export default function FamilyPage() {
                 size="block"
                 className="mt-6"
                 disabled={!name || ic.replace(/\D/g, '').length !== 12}
-                onClick={() => setSheetOpen(false)}
+                onClick={saveAndSearch}
               >
                 <Search className="size-5" />
                 {t('family.add.save')}

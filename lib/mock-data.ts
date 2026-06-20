@@ -111,6 +111,53 @@ export const CLAIMS: Claim[] = [
 
 export const DEMO_TOTAL = CLAIMS.reduce((s, c) => s + c.amount, 0)
 
+// Claims for family members, keyed by IC (digits only)
+export const FAMILY_CLAIMS: Record<string, Claim[]> = {
+  '580312082244': [
+    {
+      id: 'FAM-2024-001',
+      ic: '580312-08-2244',
+      name: 'Rosnah binti Ismail',
+      amount: 5200.0,
+      type: 'insurance',
+      typeLabel: 'Insurance Maturity Payout',
+      institution: 'Takaful Malaysia',
+      year: 2018,
+      status: 'claimable',
+      description:
+        'A life takaful policy matured but the payout was never collected. Funds are held in trust pending a valid claim.',
+    },
+    {
+      id: 'FAM-2024-002',
+      ic: '580312-08-2244',
+      name: 'Rosnah binti Ismail',
+      amount: 3220.0,
+      type: 'dividend',
+      typeLabel: 'Unclaimed Dividend',
+      institution: 'CIMB Berhad',
+      year: 2017,
+      status: 'claimable',
+      description:
+        'Share dividends declared under this name were never banked in and have since been transferred to the Registrar of Unclaimed Moneys.',
+    },
+  ],
+  '551120085531': [
+    {
+      id: 'FAM-2024-003',
+      ic: '551120-08-5531',
+      name: 'Razali bin Hamid',
+      amount: 3275.5,
+      type: 'epf',
+      typeLabel: 'KWSP Dividend Balance',
+      institution: 'KWSP (EPF)',
+      year: 2019,
+      status: 'claimable',
+      description:
+        'A residual EPF dividend balance remains in an inactive account linked to this IC. It can be consolidated into an active i-Akaun.',
+    },
+  ],
+}
+
 export const FAMILY: FamilyMember[] = [
   {
     id: 'fam-1',
