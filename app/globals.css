@@ -1,0 +1,182 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-display), 'Bricolage Grotesque Fallback';
+  --font-sans: var(--font-jakarta), 'Plus Jakarta Sans Fallback';
+  --font-display: var(--font-display), 'Bricolage Grotesque Fallback';
+  --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+
+  /* Brand-specific signature tokens */
+  --color-pine: var(--pine);
+  --color-pine-foreground: var(--pine-foreground);
+  --color-pine-soft: var(--pine-soft);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-gold-soft: var(--gold-soft);
+  --color-clay: var(--clay);
+  --color-clay-foreground: var(--clay-foreground);
+  --color-clay-soft: var(--clay-soft);
+  --color-teal: var(--teal);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  color-scheme: light;
+
+  /* Core neutrals — warm paper, not gray */
+  --ink: #15241e;
+  --paper: #f3efe5;
+
+  --background: #f3efe5;
+  --foreground: #15241e;
+  --card: #fbf9f3;
+  --card-foreground: #15241e;
+  --popover: #fbf9f3;
+  --popover-foreground: #15241e;
+
+  /* Pine — primary brand (deep emerald-teal) */
+  --pine: #0c6b52;
+  --pine-foreground: #f3efe5;
+  --pine-soft: #d7e7df;
+
+  /* Gold — signature accent (ringgit gold) */
+  --gold: #c98a1f;
+  --gold-foreground: #15241e;
+  --gold-soft: #f5e6c8;
+
+  --primary: #0c6b52;
+  --primary-foreground: #f7f9f6;
+  --secondary: #e7e2d4;
+  --secondary-foreground: #15241e;
+  --muted: #e7e2d4;
+  --muted-foreground: #5f6b62;
+  --accent: #f5e6c8;
+  --accent-foreground: #5a3d09;
+
+  --success: #0c6b52;
+  --warning: #c98a1f;
+  --clay: #b23b2c;
+  --clay-foreground: #f7f9f6;
+  --clay-soft: #f3dcd6;
+  --teal: #4a917a;
+  --destructive: #b23b2c;
+  --destructive-foreground: #f7f9f6;
+
+  --border: #ddd6c5;
+  --input: #ddd6c5;
+  --ring: #0c6b52;
+
+  --chart-1: #0c6b52;
+  --chart-2: #c98a1f;
+  --chart-3: #4a917a;
+  --chart-4: #d9b25f;
+  --chart-5: #15241e;
+
+  --radius: 1rem;
+
+  --sidebar: #fbf9f3;
+  --sidebar-foreground: #15241e;
+  --sidebar-primary: #0c6b52;
+  --sidebar-primary-foreground: #f7f9f6;
+  --sidebar-accent: #f5e6c8;
+  --sidebar-accent-foreground: #5a3d09;
+  --sidebar-border: #ddd6c5;
+  --sidebar-ring: #0c6b52;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Signature: tabular figures for money / IC numbers */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Signature: subtle perforated "claim ticket" edge */
+.ticket-notch {
+  position: relative;
+}
+.ticket-notch::before,
+.ticket-notch::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--background);
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ticket-notch::before {
+  left: -9px;
+}
+.ticket-notch::after {
+  right: -9px;
+}
+
+/* Hide scrollbars on the simulated phone scroll areas */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
