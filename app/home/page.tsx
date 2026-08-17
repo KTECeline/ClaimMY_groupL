@@ -55,7 +55,7 @@ export default function HomePage() {
         </h1>
       </div>
 
-      <main className="relative z-10 flex-1 px-5 pb-6">
+      <main className="relative z-10 flex-1 px-5 pb-28">
         {/* The one thing this screen is for */}
         <div className="-mt-10">
           <ICSearchInput />

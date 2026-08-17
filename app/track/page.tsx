@@ -48,7 +48,7 @@ export default function TrackPage() {
         }
       />
 
-      <main className="flex-1 overflow-y-auto no-scrollbar px-5 pb-6">
+      <main className="flex-1 overflow-y-auto no-scrollbar px-5 pb-28">
         {all.length === 0 ? (
           <EmptyState
             icon={<FolderOpen className="size-9" />}

@@ -113,7 +113,7 @@ export default function NotificationsPage() {
         }
       />
 
-      <main className="flex-1 overflow-y-auto no-scrollbar px-5 pb-6">
+      <main className="flex-1 overflow-y-auto no-scrollbar px-5 pb-28">
         {loading ? (
           <ListSkeleton rows={4} />
         ) : items.length === 0 ? (

@@ -62,7 +62,7 @@ export default function ProfilePage() {
     <MobileContainer>
       <TopBar title={t('profile.title')} back={false} />
 
-      <main className="flex-1 overflow-y-auto no-scrollbar px-5 pb-6">
+      <main className="flex-1 overflow-y-auto no-scrollbar px-5 pb-28">
         {/* Identity */}
         <div className="flex flex-col items-center py-2 text-center">
           <span className="flex size-16 items-center justify-center rounded-full bg-pine font-display text-xl font-bold text-pine-foreground">

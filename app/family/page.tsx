@@ -32,7 +32,7 @@ export default function FamilyPage() {
     <MobileContainer>
       <TopBar title={t('family.hub.title')} back={false} />
 
-      <main className="flex-1 px-5 pb-6">
+      <main className="flex-1 px-5 pb-28">
         <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
           {t('family.hub.sub')}
         </p>

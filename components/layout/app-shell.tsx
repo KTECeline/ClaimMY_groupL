@@ -54,7 +54,11 @@ export function AppShell({
         />
       )}
 
-      <div className={cn('flex-1 px-5 pb-6', bodyClassName)}>{children}</div>
+      {/* pb-28 clears the fixed BottomNav (see phone-overlay.tsx) instead of
+          the pb-6 that was enough when the nav sat in normal flow. */}
+      <div className={cn('flex-1 px-5', nav ? 'pb-28' : 'pb-6', bodyClassName)}>
+        {children}
+      </div>
 
       {footer && (
         <div className="sticky bottom-0 z-20 border-t border-border bg-background/92 px-5 pb-3 pt-3 backdrop-blur-md">

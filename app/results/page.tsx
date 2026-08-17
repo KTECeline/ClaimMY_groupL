@@ -94,7 +94,7 @@ export default function ResultsPage() {
     <MobileContainer>
       <TopBar title={t('results.title')} />
 
-      <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-8">
+      <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-28">
         {/* Hero total */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
