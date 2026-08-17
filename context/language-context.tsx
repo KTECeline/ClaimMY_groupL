@@ -1,7 +1,8 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useCallback, type ReactNode } from 'react'
 import { dictionaries, type Lang } from '@/lib/i18n/dictionary'
+import { usePersistentState } from '@/lib/use-persistent-state'
 
 type LanguageContextValue = {
   lang: Lang
@@ -12,7 +13,9 @@ type LanguageContextValue = {
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>('en')
+  // Persisted: an elderly BM-only user should not have to re-pick their
+  // language every time they open the app.
+  const [lang, setLang] = usePersistentState<Lang>('lang', 'en')
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) => {

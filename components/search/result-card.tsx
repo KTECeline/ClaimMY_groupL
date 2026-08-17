@@ -8,15 +8,29 @@ import { Amount } from '@/components/common/amount'
 import { useLanguage } from '@/context/language-context'
 import type { Claim } from '@/lib/mock-data'
 
-const cardVariants = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-}
-
-export function ResultCard({ claim }: { claim: Claim }) {
+/**
+ * Self-animating rather than variant-driven: this card now renders both in a
+ * flat sorted list and inside a collapsed institution group, and inherited
+ * variants only work when a parent is orchestrating them.
+ */
+export function ResultCard({
+  claim,
+  index = 0,
+}: {
+  claim: Claim
+  index?: number
+}) {
   const { t } = useLanguage()
   return (
-    <motion.div variants={cardVariants}>
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.32,
+        delay: index * 0.07,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <Link
         href={`/claim/${claim.id}`}
         className="block rounded-3xl bg-card p-4 ring-1 ring-border transition-all hover:ring-pine/40 hover:shadow-[0_14px_30px_-22px_rgba(12,107,82,0.5)]"

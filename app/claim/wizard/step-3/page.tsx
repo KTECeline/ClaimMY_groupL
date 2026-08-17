@@ -1,129 +1,131 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Camera, FileUp, Check, Loader2, FileText, RotateCcw } from 'lucide-react'
-import { StepWrapper, WizardFooter } from '@/components/wizard/step-wrapper'
-import { AppButton } from '@/components/ui/app-button'
-import { useLanguage } from '@/context/language-context'
+import { motion } from 'motion/react'
+import { Check, Zap, HelpCircle } from 'lucide-react'
+import { StepWrapper } from '@/components/wizard/step-wrapper'
 import { useClaim } from '@/context/claim-context'
+import { useLanguage } from '@/context/language-context'
+import { getDocument, VAULT_DOC_IDS } from '@/lib/mock-data'
+import { useRequiredDocs } from '@/lib/use-required-docs'
 import { cn } from '@/lib/utils'
 
-type DocState = 'idle' | 'uploading' | 'done'
-
-const DOC_KEYS = ['mykad', 'bank'] as const
-
-export default function Step3() {
+/**
+ * S-11b · Document Checklist — Step 3 of 6.
+ *
+ * This screen exists because 27.8% of survey respondents were blocked by
+ * "confusing instructions" and the journey map's DECIDE stage records "no
+ * upfront document checklist". Telling people what to gather *before* they
+ * start is the cheapest fix for mid-flow abandonment.
+ */
+export default function WizardStep3() {
   const router = useRouter()
   const { t } = useLanguage()
-  const { activeClaim, wizard, updateWizard, editFromReview, setEditFromReview } = useClaim()
-  const [states, setStates] = useState<Record<string, DocState>>({})
+  const { activeClaim, wizard, updateWizard } = useClaim()
+  const requiredDocs = useRequiredDocs()
 
   useEffect(() => {
     if (!activeClaim) router.replace('/home')
   }, [activeClaim, router])
 
-  const docLabels: Record<string, string> = {
-    mykad: t('wiz.s3.doc.mykad'),
-    bank: t('wiz.s3.doc.bank'),
-  }
+  if (!activeClaim) return null
 
-  function upload(key: string) {
-    if (states[key] === 'uploading') return
-    setStates((s) => ({ ...s, [key]: 'uploading' }))
-    setTimeout(() => {
-      setStates((s) => ({ ...s, [key]: 'done' }))
-      if (!wizard.docsUploaded.includes(key)) {
-        updateWizard({ docsUploaded: [...wizard.docsUploaded, key] })
-      }
-    }, 1400)
-  }
+  const ticked = wizard.checklist
+  const allTicked = requiredDocs.every((d) => ticked.includes(d))
 
-  const allDone = DOC_KEYS.every((k) => states[k] === 'done')
+  // Documents already in the vault will auto-fill at the upload step.
+  const vaultCount = requiredDocs.filter((id) => VAULT_DOC_IDS.includes(id)).length
+
+  function toggle(id: string) {
+    updateWizard({
+      checklist: ticked.includes(id)
+        ? ticked.filter((d) => d !== id)
+        : [...ticked, id],
+    })
+  }
 
   return (
-    <StepWrapper title={t('wiz.s3.title')} subtitle={t('wiz.s3.sub')}>
-      <div className="flex flex-col gap-4">
-        {DOC_KEYS.map((key) => {
-          const state = states[key] ?? 'idle'
+    <StepWrapper
+      title={t('wiz.s3.title')}
+      subtitle={t('wiz.s3.sub')}
+      disabled={!allTicked}
+      disabledHint={t('wiz.s3.gate')}
+      continueLabel={t('wiz.s3.ready')}
+      onContinue={() => {
+        updateWizard({ furthestStep: 4 })
+        router.push('/claim/wizard/step-4')
+      }}
+    >
+      <ul className="flex flex-col gap-2.5">
+        {requiredDocs.map((id) => {
+          const doc = getDocument(id)
+          if (!doc) return null
+          const checked = ticked.includes(id)
           return (
-            <div
-              key={key}
-              className={cn(
-                'rounded-2xl p-4 ring-1 transition-all',
-                state === 'done' ? 'bg-pine-soft ring-pine/40' : 'bg-card ring-border',
-              )}
-            >
-              <div className="flex items-center gap-3">
+            <li key={id}>
+              <button
+                onClick={() => toggle(id)}
+                role="checkbox"
+                aria-checked={checked}
+                data-tap
+                className={cn(
+                  'flex w-full items-start gap-3 rounded-2xl border-2 p-3.5 text-left transition-colors',
+                  checked
+                    ? 'border-pine bg-pine-soft/40'
+                    : 'border-border bg-card hover:border-pine/40',
+                )}
+              >
                 <span
                   className={cn(
-                    'flex size-11 shrink-0 items-center justify-center rounded-xl',
-                    state === 'done' ? 'bg-pine text-pine-foreground' : 'bg-muted text-muted-foreground',
+                    'mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg border-2 transition-colors',
+                    checked
+                      ? 'border-pine bg-pine text-pine-foreground'
+                      : 'border-border',
                   )}
                 >
-                  {state === 'done' ? (
-                    <Check className="size-5" strokeWidth={3} />
-                  ) : state === 'uploading' ? (
-                    <Loader2 className="size-5 animate-spin" />
-                  ) : (
-                    <FileText className="size-5" />
+                  {checked && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 520, damping: 22 }}
+                    >
+                      <Check className="size-4" strokeWidth={3} />
+                    </motion.span>
                   )}
                 </span>
-                <div className="flex-1">
-                  <p className="text-[0.95rem] font-semibold text-foreground">{docLabels[key]}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {state === 'done'
-                      ? t('wiz.s3.uploaded')
-                      : state === 'uploading'
-                        ? `${t('wiz.s3.uploaded')}…`
-                        : 'PDF, JPG or PNG'}
-                  </p>
-                </div>
-                {state === 'done' && (
-                  <button
-                    onClick={() => upload(key)}
-                    className="flex items-center gap-1 text-xs font-semibold text-pine"
-                  >
-                    <RotateCcw className="size-3.5" />
-                    {t('wiz.s3.retake')}
-                  </button>
-                )}
-              </div>
-
-              {state === 'idle' && (
-                <div className="mt-3 flex gap-2">
-                  <AppButton variant="soft" size="sm" className="flex-1" onClick={() => upload(key)}>
-                    <Camera className="size-4" />
-                    {t('wiz.s3.scan')}
-                  </AppButton>
-                  <AppButton variant="soft" size="sm" className="flex-1" onClick={() => upload(key)}>
-                    <FileUp className="size-4" />
-                    {t('wiz.s3.upload')}
-                  </AppButton>
-                </div>
-              )}
-            </div>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold leading-snug">
+                    {t(doc.labelKey)}
+                  </span>
+                  <span className="mt-0.5 block text-sm leading-snug text-muted-foreground text-pretty">
+                    {t(doc.hintKey)}
+                  </span>
+                </span>
+              </button>
+            </li>
           )
         })}
-      </div>
+      </ul>
 
-      <WizardFooter>
-        <AppButton variant="outline" size="md" onClick={() => router.back()}>
-          {t('wiz.back')}
-        </AppButton>
-        <AppButton
-          variant="primary"
-          size="md"
-          className="flex-1"
-          disabled={!allDone}
-          onClick={() => {
-            if (editFromReview) setEditFromReview(false)
-            router.push('/claim/wizard/step-4')
-          }}
-        >
-          {editFromReview ? 'Save & return' : t('wiz.next')}
-        </AppButton>
-      </WizardFooter>
+      {/* "Don't have this?" — the deck's inline escape hatch, so a missing
+          document sends you to help instead of out of the app entirely. */}
+      <button
+        onClick={() => router.push('/settings/help')}
+        className="mt-4 inline-flex items-center gap-1.5 self-start text-sm font-bold text-pine underline underline-offset-2"
+      >
+        <HelpCircle className="size-4" />
+        {t('wiz.s3.missing')}
+      </button>
+
+      {vaultCount > 0 && (
+        <div className="mt-5 flex items-start gap-3 rounded-2xl bg-gold-soft p-4">
+          <Zap className="mt-0.5 size-4 shrink-0 text-accent-foreground" />
+          <p className="text-sm font-semibold leading-snug text-accent-foreground text-pretty">
+            {t('wiz.s3.autofill')}
+          </p>
+        </div>
+      )}
     </StepWrapper>
   )
 }

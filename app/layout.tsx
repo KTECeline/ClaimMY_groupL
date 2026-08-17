@@ -29,8 +29,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   colorScheme: 'light',
   themeColor: '#0c6b52',
-  maximumScale: 1,
-  userScalable: false,
+  // Pinch-zoom stays enabled: blocking it fails WCAG 1.4.4, and this prototype
+  // argues for elderly accessibility. Simple Mode is the in-app answer, not a
+  // replacement for the platform's own zoom.
 }
 
 export default function RootLayout({

@@ -1,157 +1,134 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check, Loader2, Pencil } from 'lucide-react'
-import { StepWrapper, WizardFooter } from '@/components/wizard/step-wrapper'
-import { AppButton } from '@/components/ui/app-button'
-import { Amount } from '@/components/common/amount'
+import { Camera, Zap } from 'lucide-react'
+import { StepWrapper } from '@/components/wizard/step-wrapper'
+import { DocTile } from '@/components/common/doc-tile'
+import { useClaim, type DocState } from '@/context/claim-context'
 import { useLanguage } from '@/context/language-context'
-import { useClaim } from '@/context/claim-context'
-import { cn } from '@/lib/utils'
+import { useToast } from '@/context/toast-context'
+import { getDocument, VAULT_DOC_IDS } from '@/lib/mock-data'
+import { useRequiredDocs } from '@/lib/use-required-docs'
 
-function genRef() {
-  const part = () => Math.random().toString(36).slice(2, 6).toUpperCase()
-  return `CLM-${part()}-2026`
-}
+const UPLOAD_MS = 1400
 
-function Row({
-  label,
-  children,
-  onEdit,
-}: {
-  label: string
-  children: React.ReactNode
-  onEdit?: () => void
-}) {
-  return (
-    <div className="flex items-start justify-between gap-3 py-3">
-      <div className="min-w-0">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          {label}
-        </p>
-        <div className="mt-0.5 text-[0.95rem] font-medium text-foreground">{children}</div>
-      </div>
-      {onEdit && (
-        <button onClick={onEdit} className="shrink-0 text-pine" aria-label="Edit">
-          <Pencil className="size-4" />
-        </button>
-      )}
-    </div>
-  )
-}
-
-export default function Step4() {
+/** S-12 · Document Upload — Step 4 of 6 */
+export default function WizardStep4() {
   const router = useRouter()
   const { t } = useLanguage()
-  const {
-    activeClaim,
-    wizard,
-    setLastRef,
-    addSubmittedClaim,
-    setEditFromReview,
-    resetWizard,
-  } = useClaim()
-  const [agree, setAgree] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
+  const { show } = useToast()
+  const { activeClaim, wizard, updateWizard } = useClaim()
+  const requiredDocs = useRequiredDocs()
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([])
 
   useEffect(() => {
     if (!activeClaim) router.replace('/home')
   }, [activeClaim, router])
 
+  // Auto-fill anything already in the vault. This is the whole reason the
+  // vault exists — "difficult form-filling" was the #2 blocker at 16.7%.
+  useEffect(() => {
+    const prefill: Record<string, DocState> = {}
+    requiredDocs.forEach((id) => {
+      if (VAULT_DOC_IDS.includes(id) && !wizard.docs[id]) prefill[id] = 'done'
+    })
+    if (Object.keys(prefill).length > 0) {
+      updateWizard({ docs: { ...wizard.docs, ...prefill } })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requiredDocs.join(',')])
+
+  useEffect(() => {
+    const list = timers.current
+    return () => list.forEach(clearTimeout)
+  }, [])
+
   if (!activeClaim) return null
 
-  function goEdit(step: string) {
-    setEditFromReview(true)
-    router.push(`/claim/wizard/${step}`)
+  const setDoc = (id: string, state: DocState) =>
+    updateWizard({ docs: { ...wizard.docs, [id]: state } })
+
+  function startUpload(id: string, label: string) {
+    setDoc(id, 'uploading')
+    timers.current.push(
+      setTimeout(() => {
+        setDoc(id, 'done')
+        show({ message: `${label} — ${t('wiz.s4.uploaded')}` })
+      }, UPLOAD_MS),
+    )
   }
 
-  function submit() {
-    setSubmitting(true)
-    const ref = genRef()
-    setLastRef(ref)
-
-    // Add the newly submitted claim to the live tracker list
-    const today = new Date()
-    const dateLabel = today.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    })
-    addSubmittedClaim({
-      id: ref,
-      ref,
-      type: activeClaim.typeLabel,
-      institution: activeClaim.institution,
-      amount: activeClaim.amount,
-      submittedOn: dateLabel,
-      stage: 0,
-      status: 'active',
-    })
-
-    setTimeout(() => router.push('/claim/success'), 1600)
-  }
-
-  const modeLabel = t(`wiz.s2.${wizard.mode}`)
+  const allDone = requiredDocs.every((id) => wizard.docs[id] === 'done')
+  const fromVault = requiredDocs.filter((id) => VAULT_DOC_IDS.includes(id))
 
   return (
-    <StepWrapper title={t('wiz.s4.title')} subtitle={t('wiz.s4.sub')}>
-      <div className="divide-y divide-border rounded-2xl bg-card px-4 ring-1 ring-border">
-        <Row label={t('wiz.s4.claimant')} onEdit={() => goEdit('step-1')}>
-          <p>{wizard.name}</p>
-          <p className="font-mono text-sm tabular-nums text-muted-foreground">{wizard.ic}</p>
-        </Row>
-        <Row label={t('wiz.s4.bank')} onEdit={() => goEdit('step-1')}>
-          <p className="text-sm">{wizard.bankAccount}</p>
-        </Row>
-        <Row label={t('wiz.s4.claiming')} onEdit={() => goEdit('step-2')}>
-          {modeLabel}
-        </Row>
-        <Row label={t('wiz.s4.docs')} onEdit={() => goEdit('step-3')}>
-          {wizard.docsUploaded.length} {t('wiz.s4.docs').toLowerCase()}
-        </Row>
-        <Row label={t('wiz.s4.payout')}>
-          <p>{activeClaim.institution}</p>
-        </Row>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between rounded-2xl bg-pine px-5 py-4 text-pine-foreground">
-        <span className="text-sm font-semibold opacity-90">{activeClaim.typeLabel}</span>
-        <Amount value={activeClaim.amount} className="text-pine-foreground" size="md" />
-      </div>
-
+    <StepWrapper
+      title={t('wiz.s4.title')}
+      subtitle={t('wiz.s4.sub')}
+      disabled={!allDone}
+      disabledHint={t('wiz.s4.gate')}
+      onContinue={() => {
+        updateWizard({ furthestStep: 5 })
+        router.push('/claim/wizard/step-5')
+      }}
+    >
+      {/* Scan-everything shortcut, as the deck's primary CTA */}
       <button
-        onClick={() => setAgree((a) => !a)}
-        className="mt-4 flex items-start gap-3 rounded-2xl bg-card p-4 text-left ring-1 ring-border"
+        onClick={() =>
+          requiredDocs.forEach((id) => {
+            if (wizard.docs[id] !== 'done') {
+              startUpload(id, t(getDocument(id)?.labelKey ?? ''))
+            }
+          })
+        }
+        data-tap
+        className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-pine font-bold text-pine-foreground shadow-[0_6px_20px_-8px_rgba(12,107,82,0.7)] transition-transform active:scale-[0.98]"
       >
-        <span
-          className={cn(
-            'mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors',
-            agree ? 'border-pine bg-pine text-pine-foreground' : 'border-border',
-          )}
-        >
-          {agree && <Check className="size-3.5" strokeWidth={3} />}
-        </span>
-        <span className="text-sm font-medium text-foreground">{t('wiz.s4.agree')}</span>
+        <Camera className="size-5" />
+        {t('wiz.s4.scan')}
       </button>
 
-      <WizardFooter>
-        <AppButton
-          variant="gold"
-          size="block"
-          disabled={!agree || submitting}
-          onClick={submit}
-        >
-          {submitting ? (
-            <>
-              <Loader2 className="size-5 animate-spin" />
-              {t('wiz.submit')}…
-            </>
-          ) : (
-            t('wiz.submit')
-          )}
-        </AppButton>
-      </WizardFooter>
+      <p className="my-4 text-center text-sm text-muted-foreground">
+        {t('wiz.s4.or')}
+      </p>
+
+      {fromVault.length > 0 && (
+        <div className="mb-4 flex items-center gap-2.5 rounded-2xl bg-gold-soft px-4 py-3">
+          <Zap className="size-4 shrink-0 text-accent-foreground" />
+          <span className="text-sm font-semibold text-accent-foreground">
+            {t('wiz.s4.vault')}
+          </span>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-3">
+        {requiredDocs.map((id) => {
+          const doc = getDocument(id)
+          if (!doc) return null
+          const label = t(doc.labelKey)
+          return (
+            <DocTile
+              key={id}
+              label={label}
+              hint={t(doc.hintKey)}
+              state={wizard.docs[id] ?? 'idle'}
+              onScan={() => startUpload(id, label)}
+              onUpload={() => startUpload(id, label)}
+              onRetake={() => setDoc(id, 'idle')}
+              scanLabel={t('wiz.s4.scan.btn')}
+              uploadLabel={t('wiz.s4.upload.btn')}
+              retakeLabel={t('wiz.s4.retake')}
+              uploadingLabel={t('wiz.s4.uploading')}
+              doneLabel={t('wiz.s4.uploaded')}
+            />
+          )
+        })}
+      </div>
+
+      <p className="mt-4 text-center text-xs text-muted-foreground">
+        {t('wiz.s4.formats')}
+      </p>
     </StepWrapper>
   )
 }

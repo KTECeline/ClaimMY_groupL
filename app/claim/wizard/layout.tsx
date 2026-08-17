@@ -1,18 +1,28 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { motion } from 'motion/react'
+import { Bell } from 'lucide-react'
+import Link from 'next/link'
 import { MobileContainer } from '@/components/layout/mobile-container'
 import { TopBar } from '@/components/layout/top-bar'
-import { WizardProgress } from '@/components/wizard/wizard-progress'
+import { BottomNav } from '@/components/layout/bottom-nav'
+import { HelpFab } from '@/components/layout/help-fab'
 import { useLanguage } from '@/context/language-context'
+import { TOTAL_STEPS } from '@/context/claim-context'
 
-const TOTAL = 4
+const TITLE_KEYS = [
+  'wiz.s1.title',
+  'wiz.s2.title',
+  'wiz.s3.title',
+  'wiz.s4.title',
+  'wiz.s5.title',
+  'wiz.s6.title',
+]
 
 function stepFromPath(path: string): number {
   const m = path.match(/step-(\d)/)
-  if (m) return Number(m[1])
-  if (path.includes('success')) return TOTAL
-  return 1
+  return m ? Number(m[1]) : 1
 }
 
 export default function WizardLayout({
@@ -21,25 +31,52 @@ export default function WizardLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const router = useRouter()
   const { t } = useLanguage()
-  const isSuccess = pathname.includes('success')
   const step = stepFromPath(pathname)
-
-  if (isSuccess) {
-    // Success screen owns the full canvas
-    return <>{children}</>
-  }
+  const pct = (step / TOTAL_STEPS) * 100
 
   return (
     <MobileContainer>
       <TopBar
-        title={t('wiz.step', { n: step, total: TOTAL })}
-        right={null}
+        title={t(TITLE_KEYS[step - 1])}
+        onBack={() =>
+          step === 1 ? router.back() : router.push(`/claim/wizard/step-${step - 1}`)
+        }
+        right={
+          <Link
+            href="/notifications"
+            aria-label={t('alerts.title')}
+            className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-foreground/5"
+          >
+            <Bell className="size-5" />
+          </Link>
+        }
       />
-      <WizardProgress step={step} total={TOTAL} />
+
+      {/* Thin progress bar + explicit "Step N of 6" — the deck's own pattern.
+          74.1% started a claim but only 20.4% finished; knowing how much is
+          left is the cheapest thing that helps. */}
+      <div className="px-5 pb-3">
+        <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
+          <motion.div
+            className="h-full rounded-full bg-pine"
+            initial={false}
+            animate={{ width: `${pct}%` }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </div>
+        <p className="mt-1.5 text-xs font-semibold text-muted-foreground">
+          {t('wiz.step.of', { step, total: TOTAL_STEPS })}
+        </p>
+      </div>
+
       <div className="flex flex-1 flex-col overflow-y-auto no-scrollbar">
         {children}
       </div>
+
+      <HelpFab />
+      <BottomNav />
     </MobileContainer>
   )
 }

@@ -7,12 +7,14 @@ import { cn } from '@/lib/utils'
 
 export function TopBar({
   title,
+  subtitle,
   back = true,
   onBack,
   right,
   variant = 'paper',
 }: {
   title?: string
+  subtitle?: string
   back?: boolean
   onBack?: () => void
   right?: ReactNode
@@ -48,9 +50,23 @@ export function TopBar({
         <span className="w-2" />
       )}
       {title && (
-        <h1 className="font-display text-lg font-bold tracking-tight truncate">
-          {title}
-        </h1>
+        <div className="min-w-0">
+          <h1 className="truncate font-display text-lg font-bold tracking-tight">
+            {title}
+          </h1>
+          {subtitle && (
+            <p
+              className={cn(
+                'truncate text-xs font-medium',
+                variant === 'pine'
+                  ? 'text-pine-foreground/70'
+                  : 'text-muted-foreground',
+              )}
+            >
+              {subtitle}
+            </p>
+          )}
+        </div>
       )}
       <div className="ml-auto flex items-center gap-1">{right}</div>
     </header>

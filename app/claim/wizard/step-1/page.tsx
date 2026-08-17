@@ -1,111 +1,106 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check, Landmark, Users } from 'lucide-react'
-import { StepWrapper, WizardFooter } from '@/components/wizard/step-wrapper'
-import { AppButton } from '@/components/ui/app-button'
-import { Field } from '@/components/wizard/field'
+import { motion } from 'motion/react'
+import { Check, Clock, User, Users, Scroll } from 'lucide-react'
+import { StepWrapper } from '@/components/wizard/step-wrapper'
+import { ClaimSummaryCard } from '@/components/claim/claim-summary-card'
+import { useClaim, type ClaimMode } from '@/context/claim-context'
 import { useLanguage } from '@/context/language-context'
-import { useClaim } from '@/context/claim-context'
 import { cn } from '@/lib/utils'
 
-export default function Step1() {
+const MODES: { value: ClaimMode; icon: typeof User; labelKey: string; hintKey: string }[] = [
+  { value: 'self', icon: User, labelKey: 'wiz.s1.self', hintKey: 'wiz.s1.self.hint' },
+  { value: 'family', icon: Users, labelKey: 'wiz.s1.family', hintKey: 'wiz.s1.family.hint' },
+  { value: 'deceased', icon: Scroll, labelKey: 'wiz.s1.estate', hintKey: 'wiz.s1.estate.hint' },
+]
+
+/** S-10 · Claim Overview — Step 1 of 6 */
+export default function WizardStep1() {
   const router = useRouter()
   const { t } = useLanguage()
-  const { activeClaim, wizard, updateWizard, editFromReview, setEditFromReview } = useClaim()
-  const [confirmed, setConfirmed] = useState(false)
+  const { activeClaim, wizard, updateWizard } = useClaim()
 
   useEffect(() => {
     if (!activeClaim) router.replace('/home')
   }, [activeClaim, router])
 
-  function onContinue() {
-    if (editFromReview) {
-      setEditFromReview(false)
-      router.push('/claim/wizard/step-4')
-    } else {
-      router.push('/claim/wizard/step-2')
-    }
-  }
+  useEffect(() => {
+    updateWizard({ furthestStep: 1 })
+    // Run once on mount — updateWizard is stable enough for a prototype and
+    // re-running would fight the user's own edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  const isForOther = wizard.mode === 'family' || wizard.mode === 'deceased'
+  if (!activeClaim) return null
 
   return (
-    <StepWrapper title={t('wiz.s1.title')} subtitle={t('wiz.s1.sub')}>
-      {/* Banner shown when claiming on behalf of someone else */}
-      {isForOther && activeClaim && (
-        <div className="mb-4 flex items-center gap-2.5 rounded-2xl bg-pine-soft px-4 py-3">
-          <Users className="size-4 shrink-0 text-pine" />
-          <p className="text-sm font-semibold text-pine">
-            Claiming on behalf of{' '}
-            <span className="font-bold">{activeClaim.name}</span>
-          </p>
-        </div>
-      )}
-      <div className="flex flex-col gap-4">
-        <Field
-          label={t('wiz.s1.name')}
-          value={wizard.name}
-          onChange={(v) => updateWizard({ name: v })}
-        />
-        <Field label={t('wiz.s1.ic')} value={wizard.ic} mono readOnly />
-        <Field
-          label={t('wiz.s1.phone')}
-          value={wizard.phone}
-          onChange={(v) => updateWizard({ phone: v })}
-        />
-        <Field
-          label={t('wiz.s1.email')}
-          type="email"
-          value={wizard.email}
-          onChange={(v) => updateWizard({ email: v })}
-        />
+    <StepWrapper
+      title={t('wiz.s1.title')}
+      subtitle={t('wiz.s1.sub')}
+      onContinue={() => {
+        updateWizard({ furthestStep: 2 })
+        router.push('/claim/wizard/step-2')
+      }}
+    >
+      <ClaimSummaryCard claim={activeClaim} className="mb-4" />
 
-        {/* Bank account for payout */}
-        <div className="flex flex-col gap-1.5">
-          <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            <Landmark className="size-3.5" />
-            {t('wiz.s1.bank')}
-          </span>
-          <div className="flex items-center gap-3 rounded-2xl border-2 border-border bg-background px-4 focus-within:border-pine transition-colors">
-            <input
-              value={wizard.bankAccount}
-              onChange={(e) => updateWizard({ bankAccount: e.target.value })}
-              placeholder="Bank name · Account number"
-              className="h-12 flex-1 bg-transparent text-sm font-medium outline-none placeholder:text-muted-foreground/50"
-            />
-          </div>
-        </div>
-
-        <button
-          onClick={() => setConfirmed((c) => !c)}
-          className="mt-2 flex items-start gap-3 rounded-2xl bg-card p-4 text-left ring-1 ring-border"
-        >
-          <span
-            className={cn(
-              'mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors',
-              confirmed ? 'border-pine bg-pine text-pine-foreground' : 'border-border',
-            )}
-          >
-            {confirmed && <Check className="size-3.5" strokeWidth={3} />}
-          </span>
-          <span className="text-sm font-medium text-foreground">
-            {t('wiz.s1.confirm')}
-          </span>
-        </button>
+      <div className="mb-6 flex items-center gap-2.5 rounded-2xl bg-gold-soft px-4 py-3">
+        <Clock className="size-4 shrink-0 text-accent-foreground" />
+        <span className="text-sm font-semibold text-accent-foreground">
+          {t('wiz.s1.time')}
+        </span>
       </div>
 
-      <WizardFooter>
-        <AppButton
-          variant="primary"
-          size="block"
-          disabled={!confirmed}
-          onClick={onContinue}
-        >
-          {editFromReview ? 'Save & return to review' : t('wiz.next')}
-        </AppButton>
-      </WizardFooter>
+      <div
+        className="grid grid-cols-3 gap-2.5"
+        role="radiogroup"
+        aria-label={t('wiz.s1.title')}
+      >
+        {MODES.map(({ value, icon: Icon, labelKey, hintKey }) => {
+          const active = wizard.mode === value
+          return (
+            <button
+              key={value}
+              role="radio"
+              aria-checked={active}
+              onClick={() => updateWizard({ mode: value, familyTargetId: null })}
+              data-tap
+              className={cn(
+                'relative flex flex-col items-center gap-2 rounded-2xl border-2 px-2 py-4 text-center transition-colors',
+                active
+                  ? 'border-pine bg-pine-soft/50'
+                  : 'border-border bg-card hover:border-pine/40',
+              )}
+            >
+              {active && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 22 }}
+                  className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-pine text-pine-foreground"
+                >
+                  <Check className="size-3.5" strokeWidth={3} />
+                </motion.span>
+              )}
+              <Icon
+                className={cn(
+                  'size-7',
+                  active ? 'text-pine' : 'text-muted-foreground',
+                )}
+                strokeWidth={2}
+              />
+              <span className="text-sm font-bold leading-tight">
+                {t(labelKey)}
+              </span>
+              <span className="text-[0.68rem] leading-tight text-muted-foreground text-pretty">
+                {t(hintKey)}
+              </span>
+            </button>
+          )
+        })}
+      </div>
     </StepWrapper>
   )
 }

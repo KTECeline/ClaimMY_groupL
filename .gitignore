@@ -15,3 +15,6 @@ out/
 .env
 .env.local
 .env.production
+
+# local tool config (machine-specific, not useful to other clones)
+.claude/

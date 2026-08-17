@@ -1,213 +1,212 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'motion/react'
 import {
-  Check,
-  ChevronRight,
   Bell,
-  ShieldCheck,
-  Fingerprint,
+  CreditCard,
+  FileLock2,
+  Globe,
   Info,
+  LifeBuoy,
+  LogOut,
+  RotateCcw,
+  ShieldCheck,
+  SlidersHorizontal,
   User,
-  CloudOff,
   X,
-  Phone,
-  Mail,
 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { MobileContainer } from '@/components/layout/mobile-container'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { TopBar } from '@/components/layout/top-bar'
-import { PageTransition } from '@/components/common/page-transition'
-import { AppButton } from '@/components/ui/app-button'
+import { SectionGroup, SectionRow } from '@/components/common/section-group'
 import { Field } from '@/components/wizard/field'
+import { AppButton } from '@/components/ui/app-button'
+import { PhoneOverlay } from '@/components/layout/phone-overlay'
 import { useLanguage } from '@/context/language-context'
-import { useClaim } from '@/context/claim-context'
-import { LANGUAGES, type Lang } from '@/lib/i18n/dictionary'
-import { cn } from '@/lib/utils'
+import { useSettings } from '@/context/settings-context'
+import { useToast } from '@/context/toast-context'
+import { LANGUAGES } from '@/lib/i18n/dictionary'
+import { NOTIFICATIONS } from '@/lib/mock-data'
+import { clearPersistedState } from '@/lib/use-persistent-state'
 
-function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
-  return (
-    <button
-      onClick={onToggle}
-      role="switch"
-      aria-checked={on}
-      className={cn(
-        'relative h-7 w-12 shrink-0 rounded-full transition-colors',
-        on ? 'bg-pine' : 'bg-border',
-      )}
-    >
-      <span
-        className={cn(
-          'absolute top-1 size-5 rounded-full bg-card shadow transition-transform',
-          on ? 'translate-x-6' : 'translate-x-1',
-        )}
-      />
-    </button>
-  )
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="mt-6">
-      <h2 className="mb-2 px-1 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-        {title}
-      </h2>
-      <div className="divide-y divide-border overflow-hidden rounded-2xl bg-card ring-1 ring-border">
-        {children}
-      </div>
-    </section>
-  )
-}
-
-export default function SettingsPage() {
+/**
+ * S-25 · My Profile. An index of grouped rows, exactly as the lo-fi draws it —
+ * the deeper screens (Settings, Security, Help, Vault) each get their own
+ * route rather than being crammed in here.
+ */
+export default function ProfilePage() {
   const router = useRouter()
-  const { t, lang, setLang } = useLanguage()
-  const { updateWizard } = useClaim()
-  const [newAlerts, setNewAlerts] = useState(true)
-  const [statusAlerts, setStatusAlerts] = useState(true)
-  const [biometric, setBiometric] = useState(false)
+  const { t, lang } = useLanguage()
+  const { profile, updateProfile } = useSettings()
+  const { show } = useToast()
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(profile)
 
-  // Profile edit sheet
-  const [profileOpen, setProfileOpen] = useState(false)
-  const [profileName, setProfileName] = useState('Ahmad bin Razali')
-  const [profilePhone, setProfilePhone] = useState('012-345 6789')
-  const [profileEmail, setProfileEmail] = useState('ahmad.razali@email.com')
+  const unread = NOTIFICATIONS.filter((n) => n.unread).length
+  const currentLang = LANGUAGES.find((l) => l.code === lang)
 
-  const initials = profileName
-    .split(' ')
-    .filter(Boolean)
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
+  function openEdit() {
+    setDraft(profile)
+    setEditing(true)
+  }
+
+  function saveEdit() {
+    updateProfile(draft)
+    setEditing(false)
+    show({ message: t('profile.saved') })
+  }
 
   return (
     <MobileContainer>
-      <TopBar title={t('set.title')} back={false} />
-      <PageTransition className="flex flex-1 flex-col">
-        <main className="flex-1 px-5 pb-6">
-          {/* Profile card */}
-          <div className="mt-1 flex items-center gap-4 rounded-2xl bg-pine p-4 text-pine-foreground">
-            <span className="flex size-14 items-center justify-center rounded-full bg-pine-foreground/15 font-display text-lg font-bold">
-              {initials || 'AR'}
-            </span>
-            <div className="min-w-0">
-              <p className="text-base font-bold">{profileName}</p>
-              <p className="font-mono text-sm tabular-nums text-pine-foreground/70">900214-08-5127</p>
-            </div>
-            <button
-              onClick={() => setProfileOpen(true)}
-              className="ml-auto flex size-9 items-center justify-center rounded-full bg-pine-foreground/15 transition-colors hover:bg-pine-foreground/25"
-              aria-label={t('set.profile')}
-            >
-              <User className="size-4" />
-            </button>
-          </div>
+      <TopBar title={t('profile.title')} back={false} />
 
-          {/* Language */}
-          <Section title={t('set.language')}>
-            {LANGUAGES.map((l) => (
-              <button
-                key={l.code}
-                onClick={() => setLang(l.code as Lang)}
-                className="flex w-full items-center gap-3 px-4 py-3.5 text-left"
-              >
-                <span className="flex-1">
-                  <span className="block text-[0.95rem] font-semibold text-foreground">{l.native}</span>
-                  <span className="block text-xs text-muted-foreground">{l.label}</span>
+      <main className="flex-1 overflow-y-auto no-scrollbar px-5 pb-6">
+        {/* Identity */}
+        <div className="flex flex-col items-center py-2 text-center">
+          <span className="flex size-16 items-center justify-center rounded-full bg-pine font-display text-xl font-bold text-pine-foreground">
+            {profile.name
+              .split(' ')
+              .slice(0, 2)
+              .map((w) => w[0])
+              .join('')}
+          </span>
+          <p className="mt-3 font-display text-lg font-bold">{profile.name}</p>
+          <p className="tabular font-mono text-sm text-muted-foreground">
+            {profile.ic}
+          </p>
+        </div>
+
+        <div className="my-5 h-px bg-border" />
+
+        <SectionGroup label={t('profile.group.account')}>
+          <SectionRow
+            icon={<User className="size-4" />}
+            label={t('profile.personal')}
+            hint={t('profile.personal.hint')}
+            onClick={openEdit}
+          />
+          <SectionRow
+            icon={<CreditCard className="size-4" />}
+            label={t('profile.bank')}
+            hint={t('profile.bank.hint')}
+            href="/settings/preferences"
+          />
+          <SectionRow
+            icon={<FileLock2 className="size-4" />}
+            label={t('profile.vault')}
+            hint={t('profile.vault.hint')}
+            href="/settings/vault"
+          />
+        </SectionGroup>
+
+        <SectionGroup label={t('profile.group.language')}>
+          <SectionRow
+            icon={<Globe className="size-4" />}
+            label={t('profile.language')}
+            hint={currentLang?.native}
+            href="/settings/preferences"
+          />
+        </SectionGroup>
+
+        <SectionGroup label={t('profile.group.notifications')}>
+          <SectionRow
+            icon={<Bell className="size-4" />}
+            label={t('profile.alerts')}
+            href="/notifications/settings"
+            trailing={
+              unread > 0 ? (
+                <span className="flex size-6 items-center justify-center rounded-full bg-pine text-xs font-bold text-pine-foreground">
+                  {unread}
                 </span>
-                <span
-                  className={cn(
-                    'flex size-6 items-center justify-center rounded-full border-2 transition-colors',
-                    lang === l.code ? 'border-pine bg-pine text-pine-foreground' : 'border-border',
-                  )}
-                >
-                  {lang === l.code && <Check className="size-3.5" strokeWidth={3} />}
-                </span>
-              </button>
-            ))}
-          </Section>
+              ) : undefined
+            }
+          />
+          <SectionRow
+            icon={<SlidersHorizontal className="size-4" />}
+            label={t('profile.settings')}
+            hint={t('profile.settings.hint')}
+            href="/settings/preferences"
+          />
+        </SectionGroup>
 
-          {/* Notifications */}
-          <Section title={t('set.notifs')}>
-            <div className="flex items-center gap-3 px-4 py-3.5">
-              <Bell className="size-5 text-muted-foreground" />
-              <span className="flex-1 text-[0.95rem] font-medium text-foreground">{t('set.notifs.new')}</span>
-              <Toggle on={newAlerts} onToggle={() => setNewAlerts((v) => !v)} />
-            </div>
-            <div className="flex items-center gap-3 px-4 py-3.5">
-              <ShieldCheck className="size-5 text-muted-foreground" />
-              <span className="flex-1 text-[0.95rem] font-medium text-foreground">{t('set.notifs.status')}</span>
-              <Toggle on={statusAlerts} onToggle={() => setStatusAlerts((v) => !v)} />
-            </div>
-          </Section>
+        <SectionGroup label={t('profile.group.security')}>
+          <SectionRow
+            icon={<ShieldCheck className="size-4" />}
+            label={t('profile.security')}
+            hint={t('profile.security.hint')}
+            href="/settings/security"
+          />
+        </SectionGroup>
 
-          {/* Security */}
-          <Section title={t('set.security')}>
-            <div className="flex items-center gap-3 px-4 py-3.5">
-              <Fingerprint className="size-5 text-muted-foreground" />
-              <span className="flex-1 text-[0.95rem] font-medium text-foreground">{t('set.security.biometric')}</span>
-              <Toggle on={biometric} onToggle={() => setBiometric((v) => !v)} />
-            </div>
-          </Section>
+        <SectionGroup label={t('profile.group.about')}>
+          <SectionRow
+            icon={<LifeBuoy className="size-4" />}
+            label={t('profile.help')}
+            href="/settings/help"
+          />
+          <SectionRow
+            icon={<Info className="size-4" />}
+            label={t('profile.about')}
+            hint={t('profile.version')}
+            trailing={<span />}
+          />
+          <SectionRow
+            icon={<RotateCcw className="size-4" />}
+            label={t('profile.reset')}
+            onClick={() => {
+              clearPersistedState()
+              show({ message: t('profile.reset.done') })
+              setTimeout(() => window.location.assign('/'), 600)
+            }}
+          />
+        </SectionGroup>
 
-          {/* About */}
-          <Section title={t('set.about')}>
-            <div className="flex gap-3 px-4 py-3.5">
-              <Info className="size-5 shrink-0 text-muted-foreground" />
-              <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
-                {t('set.about.body')}
-              </p>
-            </div>
-            <div className="flex items-center gap-3 px-4 py-3.5">
-              <span className="flex-1 text-[0.95rem] font-medium text-foreground">{t('set.version')}</span>
-              <span className="font-mono text-sm text-muted-foreground">1.0.0 · demo</span>
-            </div>
-          </Section>
+        <AppButton
+          variant="ghost"
+          size="block"
+          className="text-clay"
+          onClick={() => router.push('/')}
+        >
+          <LogOut className="size-4" />
+          {t('profile.logout')}
+        </AppButton>
 
-          {/* Demo utilities */}
-          <Section title="Demo">
-            <button
-              onClick={() => router.push('/error-demo')}
-              className="flex w-full items-center gap-3 px-4 py-3.5 text-left"
-            >
-              <CloudOff className="size-5 text-clay" />
-              <span className="flex-1 text-[0.95rem] font-medium text-foreground">Error state</span>
-              <ChevronRight className="size-4 text-muted-foreground" />
-            </button>
-          </Section>
-        </main>
-        <BottomNav />
-      </PageTransition>
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          {t('profile.version')}
+        </p>
+      </main>
 
-      {/* Profile edit bottom sheet */}
+      {/* Edit personal details */}
       <AnimatePresence>
-        {profileOpen && (
-          <>
+        {editing && (
+          <PhoneOverlay>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setProfileOpen(false)}
-              className="absolute inset-0 z-40 bg-ink/40 backdrop-blur-sm"
+              onClick={() => setEditing(false)}
+              className="absolute inset-0 bg-ink/45 backdrop-blur-[2px]"
             />
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-              className="absolute inset-x-0 bottom-0 z-50 rounded-t-3xl bg-background p-5 pb-10"
+              className="absolute inset-x-0 bottom-0 max-h-[88%] overflow-y-auto no-scrollbar rounded-t-3xl bg-card p-5 pb-8 shadow-2xl"
+              role="dialog"
+              aria-label={t('profile.personal')}
             >
-              <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-border" />
-              <div className="flex items-center justify-between">
-                <h2 className="font-display text-xl font-extrabold text-foreground">
-                  Edit profile
+              <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="font-display text-xl font-bold">
+                  {t('profile.personal')}
                 </h2>
                 <button
-                  onClick={() => setProfileOpen(false)}
-                  className="flex size-9 items-center justify-center rounded-full hover:bg-foreground/5"
+                  onClick={() => setEditing(false)}
+                  aria-label={t('common.close')}
+                  className="flex size-9 items-center justify-center rounded-full transition-colors hover:bg-foreground/5"
                 >
                   <X className="size-5" />
                 </button>
@@ -215,55 +214,41 @@ export default function SettingsPage() {
 
               <div className="mt-5 flex flex-col gap-4">
                 <Field
-                  label="Full name"
-                  value={profileName}
-                  onChange={setProfileName}
+                  label={t('wiz.s5.name')}
+                  value={draft.name}
+                  onChange={(name) => setDraft({ ...draft, name })}
                 />
-                <div className="flex flex-col gap-1.5">
-                  <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    <Phone className="size-3.5" />
-                    Mobile number
-                  </span>
-                  <div className="flex items-center rounded-2xl border-2 border-border bg-background px-4 focus-within:border-pine transition-colors">
-                    <input
-                      value={profilePhone}
-                      onChange={(e) => setProfilePhone(e.target.value)}
-                      className="h-12 flex-1 bg-transparent text-sm font-medium outline-none"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    <Mail className="size-3.5" />
-                    Email address
-                  </span>
-                  <div className="flex items-center rounded-2xl border-2 border-border bg-background px-4 focus-within:border-pine transition-colors">
-                    <input
-                      type="email"
-                      value={profileEmail}
-                      onChange={(e) => setProfileEmail(e.target.value)}
-                      className="h-12 flex-1 bg-transparent text-sm font-medium outline-none"
-                    />
-                  </div>
-                </div>
+                <Field
+                  label={t('wiz.s5.phone')}
+                  value={draft.phone}
+                  mono
+                  inputMode="tel"
+                  onChange={(phone) => setDraft({ ...draft, phone })}
+                />
+                <Field
+                  label={t('wiz.s5.email')}
+                  value={draft.email}
+                  type="email"
+                  inputMode="email"
+                  onChange={(email) => setDraft({ ...draft, email })}
+                />
+                <Field
+                  label={t('wiz.s5.address')}
+                  value={draft.address}
+                  multiline
+                  onChange={(address) => setDraft({ ...draft, address })}
+                />
               </div>
 
-              <AppButton
-                variant="primary"
-                size="block"
-                className="mt-6"
-                onClick={() => {
-                  updateWizard({ name: profileName, phone: profilePhone, email: profileEmail })
-                  setProfileOpen(false)
-                }}
-              >
-                <Check className="size-5" />
-                Save changes
+              <AppButton size="block" className="mt-6" onClick={saveEdit}>
+                {t('common.save')}
               </AppButton>
             </motion.div>
-          </>
+          </PhoneOverlay>
         )}
       </AnimatePresence>
+
+      <BottomNav />
     </MobileContainer>
   )
 }

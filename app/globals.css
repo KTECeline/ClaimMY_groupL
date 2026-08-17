@@ -180,3 +180,83 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ---------------------------------------------------------------------------
+   Simple Mode — the Tan Lai Keong persona (60, low digital literacy).
+   58.5% of survey respondents flagged accessibility as a barrier, so this is a
+   real mode, not a settings row that does nothing. Driven by data-simple on
+   <html> from settings-context.
+   --------------------------------------------------------------------------- */
+:root {
+  --text-scale: 1;
+  --tap-min: 2.75rem; /* 44px — WCAG 2.5.5 AAA floor */
+}
+
+html {
+  font-size: calc(100% * var(--text-scale));
+}
+
+html[data-simple='true'] {
+  --text-scale: 1.14;
+  --tap-min: 3.5rem; /* 56px */
+  --radius: 1.1rem;
+}
+
+/* Bigger, clearer hit areas and heavier separation between blocks. */
+html[data-simple='true'] button,
+html[data-simple='true'] a[role='button'],
+html[data-simple='true'] [data-tap] {
+  min-height: var(--tap-min);
+}
+
+html[data-simple='true'] p,
+html[data-simple='true'] li {
+  line-height: 1.7;
+}
+
+html[data-simple='true'] .border,
+html[data-simple='true'] [class*='border-border'] {
+  border-width: 2px;
+}
+
+/* Optional extra contrast for low-vision users. */
+html[data-contrast='high'] {
+  --muted-foreground: #3d4a42;
+  --border: #b6ab90;
+  --input: #b6ab90;
+}
+
+/* Focus is always visible — never removed, never relying on colour alone. */
+:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Skeleton loading (Group 8 · Fidelity)
+   --------------------------------------------------------------------------- */
+@keyframes claimmy-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background-image: linear-gradient(
+    90deg,
+    var(--secondary) 25%,
+    color-mix(in oklab, var(--secondary) 55%, var(--card)) 50%,
+    var(--secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: claimmy-shimmer 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
