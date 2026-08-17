@@ -83,11 +83,19 @@ export default function TrackPage() {
             )}
 
             {past.length > 0 && (
-              <Section label={t('track.group.past')}>
-                {past.map((claim, i) => (
-                  <PastClaimRow key={claim.id} claim={claim} index={i} />
-                ))}
-              </Section>
+              <section className="mt-6">
+                <h2 className="mb-2 px-1 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                  {t('track.group.past')}
+                </h2>
+                {/* One container with divided rows, not N separate cards —
+                    these are simpler records than Active and don't need
+                    their own boxes to stay legible. */}
+                <div className="overflow-hidden rounded-2xl border border-border bg-card divide-y divide-border">
+                  {past.map((claim, i) => (
+                    <PastClaimRow key={claim.id} claim={claim} index={i} />
+                  ))}
+                </div>
+              </section>
             )}
 
             <Link
@@ -144,9 +152,7 @@ function ActiveClaimCard({
         className="block rounded-2xl border border-border bg-card p-4 transition-colors hover:bg-pine-soft/30"
       >
         <div className="flex items-center gap-3">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-pine">
-            <ClaimTypeIcon type={claim.claimType} className="size-5" />
-          </span>
+          <ClaimTypeIcon type={claim.claimType} className="size-5 shrink-0" />
           <span className="min-w-0 flex-1">
             <span className="block truncate font-semibold leading-snug">
               {claim.type}
@@ -191,7 +197,7 @@ function PastClaimRow({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.06 * index }}
-      className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4"
+      className="flex items-center gap-3 px-4 py-3.5"
     >
       <span className="min-w-0 flex-1">
         <span className="block truncate font-semibold leading-snug">

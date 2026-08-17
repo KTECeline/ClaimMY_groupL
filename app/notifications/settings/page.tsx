@@ -1,6 +1,5 @@
 'use client'
 
-import { Info } from 'lucide-react'
 import { AppShell } from '@/components/layout/app-shell'
 import { SectionGroup } from '@/components/common/section-group'
 import { ToggleRow } from '@/components/common/toggle-row'
@@ -34,12 +33,10 @@ export default function AlertSettingsPage() {
 
   return (
     <AppShell title={t('alertset.title')} fab={false}>
-      <div className="mb-6 flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
-        <Info className="mt-0.5 size-4 shrink-0 text-pine" />
-        <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
-          {t('alertset.intro')}
-        </p>
-      </div>
+      {/* Plain subtitle, not a boxed note — it's orienting text, not an aside */}
+      <p className="mb-6 text-sm leading-relaxed text-muted-foreground text-pretty">
+        {t('alertset.intro')}
+      </p>
 
       <SectionGroup label={t('alertset.types')}>
         {TYPES.map(({ key, label, hint }) => (

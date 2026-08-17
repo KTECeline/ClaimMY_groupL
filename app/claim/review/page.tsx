@@ -13,6 +13,7 @@ import {
   SectionGroup,
   SectionValueRow,
 } from '@/components/common/section-group'
+import { Callout } from '@/components/common/callout'
 import { AppButton } from '@/components/ui/app-button'
 import { useClaim } from '@/context/claim-context'
 import { useSettings } from '@/context/settings-context'
@@ -196,12 +197,9 @@ export default function ReviewPage() {
           </span>
         </button>
 
-        <div className="mt-5 flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
-          <Info className="mt-0.5 size-4 shrink-0 text-pine" />
-          <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
-            {t('review.note')}
-          </p>
-        </div>
+        <Callout icon={<Info className="size-4" />} className="mt-4">
+          {t('review.note')}
+        </Callout>
 
         <div className="mt-6">
           {!wizard.agreed && (

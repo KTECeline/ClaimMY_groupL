@@ -7,6 +7,7 @@ import { ArrowRight, Info, ScrollText } from 'lucide-react'
 import { AppShell } from '@/components/layout/app-shell'
 import { Stepper } from '@/components/common/stepper'
 import { DocTile } from '@/components/common/doc-tile'
+import { Callout } from '@/components/common/callout'
 import { AppButton } from '@/components/ui/app-button'
 import { useLanguage } from '@/context/language-context'
 import { useSettings } from '@/context/settings-context'
@@ -104,13 +105,10 @@ export default function ClaimOnBehalfPage({
         </div>
 
         {/* The practical "how do I even get one" answer, in the place where
-            the question actually occurs. */}
-        <div className="mt-4 flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
-          <Info className="mt-0.5 size-4 shrink-0 text-pine" />
-          <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
-            {t('poa.note')}
-          </p>
-        </div>
+            the question actually occurs — plain text, not another box. */}
+        <Callout icon={<Info className="size-4" />} className="mt-4">
+          {t('poa.note')}
+        </Callout>
       </motion.section>
 
       <div className="mt-8 flex gap-3">

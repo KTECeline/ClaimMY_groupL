@@ -48,7 +48,10 @@ export function HelpFab({ className }: { className?: string }) {
           onClick={() => setOpen(true)}
           aria-label={t('help.fab.aria')}
           className={cn(
-            'pointer-events-auto absolute right-4 bottom-[5.25rem] flex size-12 items-center justify-center rounded-full bg-pine text-pine-foreground shadow-[0_8px_24px_-8px_rgba(12,107,82,0.85)] transition-transform active:scale-95 focus-visible:ring-4 focus-visible:ring-ring/30',
+            // A floating action button genuinely needs elevation to read as
+            // "above" the page — but a neutral shadow says that; a pine-tinted
+            // glow just says "generated".
+            'pointer-events-auto absolute right-4 bottom-[5.25rem] flex size-12 items-center justify-center rounded-full bg-pine text-pine-foreground shadow-lg shadow-ink/20 transition-transform active:scale-95 focus-visible:ring-4 focus-visible:ring-ring/30',
             className,
           )}
         >
@@ -106,9 +109,10 @@ export function HelpFab({ className }: { className?: string }) {
                       }}
                       className="flex w-full items-center gap-3 rounded-2xl border border-border bg-background px-4 py-3.5 text-left transition-colors hover:bg-pine-soft/40 focus-visible:ring-4 focus-visible:ring-ring/30"
                     >
-                      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-pine">
-                        <Icon className="size-5" strokeWidth={2.2} />
-                      </span>
+                      <Icon
+                        className="size-5 shrink-0 text-pine"
+                        strokeWidth={2.2}
+                      />
                       <span className="min-w-0 flex-1">
                         <span className="block font-semibold">{label}</span>
                         <span className="block truncate text-sm text-muted-foreground">

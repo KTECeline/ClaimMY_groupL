@@ -31,7 +31,11 @@ export function BrandWordmark({ className }: { className?: string }) {
     <span className={cn('inline-flex items-center gap-2', className)}>
       <BrandMark className="size-7" />
       <span className="font-display text-xl font-extrabold tracking-tight">
-        Claim<span className="text-gold">MY</span>
+        Claim
+        {/* gold-bright, not gold — this wordmark only ever sits on the dark
+            teal header, and the (now dark) accent green was nearly invisible
+            against it. */}
+        <span className="text-gold-bright">MY</span>
       </span>
     </span>
   )

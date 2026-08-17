@@ -24,8 +24,7 @@ export default function LoginPage() {
 
   return (
     <MobileContainer className="bg-pine text-pine-foreground">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(120%_80%_at_50%_0%,rgba(201,138,31,0.24),transparent_62%)]" />
-
+      {/* Flat pine, no decorative glow behind it — the fill carries the screen */}
       <div className="relative flex flex-1 flex-col px-6 pb-8 pt-5">
         <div className="flex justify-end">
           <LanguageToggle light />
@@ -58,7 +57,7 @@ export default function LoginPage() {
                 inputMode="numeric"
                 placeholder="000000-00-0000"
                 autoComplete="username"
-                className="tabular h-14 rounded-2xl border-2 border-white/15 bg-white/10 px-4 font-mono text-lg tracking-wide text-pine-foreground placeholder:text-pine-foreground/35 focus:border-gold focus:outline-none"
+                className="tabular h-14 rounded-2xl border-2 border-white/15 bg-white/10 px-4 font-mono text-lg tracking-wide text-pine-foreground placeholder:text-pine-foreground/35 focus:border-gold-bright focus:outline-none"
               />
             </label>
 
@@ -72,7 +71,7 @@ export default function LoginPage() {
                 type="password"
                 placeholder="••••••••"
                 autoComplete="current-password"
-                className="h-14 rounded-2xl border-2 border-white/15 bg-white/10 px-4 text-lg text-pine-foreground placeholder:text-pine-foreground/35 focus:border-gold focus:outline-none"
+                className="h-14 rounded-2xl border-2 border-white/15 bg-white/10 px-4 text-lg text-pine-foreground placeholder:text-pine-foreground/35 focus:border-gold-bright focus:outline-none"
               />
             </label>
 
@@ -105,7 +104,7 @@ export default function LoginPage() {
               data-tap
               className="flex h-14 items-center justify-center gap-2.5 rounded-2xl border-2 border-white/20 font-semibold transition-colors hover:bg-white/10"
             >
-              <ShieldCheck className="size-5 text-gold" />
+              <ShieldCheck className="size-5 text-gold-bright" />
               {t('login.mydigital')}
             </button>
             <button
@@ -113,7 +112,7 @@ export default function LoginPage() {
               data-tap
               className="flex h-14 items-center justify-center gap-2.5 rounded-2xl border-2 border-white/20 font-semibold transition-colors hover:bg-white/10"
             >
-              <ScanFace className="size-5 text-gold" />
+              <ScanFace className="size-5 text-gold-bright" />
               {t('login.biometric')}
             </button>
           </div>

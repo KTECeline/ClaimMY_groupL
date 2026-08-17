@@ -30,9 +30,6 @@ export default function OnboardingPage() {
 
   return (
     <MobileContainer className="bg-pine text-pine-foreground">
-      {/* Decorative top band */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(120%_80%_at_50%_0%,rgba(201,138,31,0.22),transparent_60%)]" />
-
       <div className="relative flex flex-1 flex-col px-6 pb-8 pt-12">
         <AnimatePresence mode="wait">
           {stage === 'lang' ? (
@@ -62,7 +59,7 @@ export default function OnboardingPage() {
                       className={cn(
                         'flex items-center justify-between rounded-2xl border-2 px-5 py-4 text-left transition-all',
                         active
-                          ? 'border-gold bg-white/10'
+                          ? 'border-gold-bright bg-white/10'
                           : 'border-white/15 hover:border-white/30',
                       )}
                     >
@@ -75,10 +72,10 @@ export default function OnboardingPage() {
                       <span
                         className={cn(
                           'flex size-6 items-center justify-center rounded-full border-2 transition-colors',
-                          active ? 'border-gold bg-gold' : 'border-white/30',
+                          active ? 'border-gold-bright bg-gold-bright' : 'border-white/30',
                         )}
                       >
-                        {active && <Check className="size-4 text-gold-foreground" />}
+                        {active && <Check className="size-4 text-ink" />}
                       </span>
                     </button>
                   )
@@ -127,7 +124,7 @@ export default function OnboardingPage() {
                     <span className="flex size-24 items-center justify-center rounded-[2rem] bg-white/10 ring-1 ring-white/15">
                       {(() => {
                         const Icon = slides[index].icon
-                        return <Icon className="size-11 text-gold" strokeWidth={2} />
+                        return <Icon className="size-11 text-gold-bright" strokeWidth={2} />
                       })()}
                     </span>
                     <h2 className="mt-8 font-display text-3xl font-extrabold leading-tight text-balance">
@@ -147,7 +144,7 @@ export default function OnboardingPage() {
                     key={i}
                     className={cn(
                       'h-2 rounded-full transition-all',
-                      i === index ? 'w-7 bg-gold' : 'w-2 bg-white/25',
+                      i === index ? 'w-7 bg-gold-bright' : 'w-2 bg-white/25',
                     )}
                   />
                 ))}

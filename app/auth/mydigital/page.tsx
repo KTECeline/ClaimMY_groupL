@@ -141,7 +141,7 @@ export default function MyDigitalIdPage() {
                 <button
                   onClick={authorize}
                   data-tap
-                  className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-pine font-bold text-pine-foreground shadow-[0_6px_20px_-8px_rgba(12,107,82,0.7)] transition-transform active:scale-[0.98]"
+                  className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-pine font-bold text-pine-foreground transition-transform active:scale-[0.98]"
                 >
                   <ShieldCheck className="size-5" />
                   {t('mydigital.authorize')}

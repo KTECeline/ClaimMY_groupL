@@ -123,9 +123,7 @@ export default function FamilyPage() {
           href="/family/deceased"
           className="mt-4 flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3.5 transition-colors hover:bg-pine-soft/30"
         >
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gold-soft text-accent-foreground">
-            <Scroll className="size-4" />
-          </span>
+          <Scroll className="size-5 shrink-0 text-gold" />
           <span className="flex-1 text-sm font-semibold text-pretty">
             {t('family.deceased.link')}
           </span>

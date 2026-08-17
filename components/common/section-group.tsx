@@ -62,8 +62,8 @@ export function SectionRow({
       {icon && (
         <span
           className={cn(
-            'flex size-9 shrink-0 items-center justify-center rounded-xl',
-            danger ? 'bg-clay-soft text-clay' : 'bg-pine-soft text-pine',
+            'flex size-5 shrink-0 items-center justify-center',
+            danger ? 'text-clay' : 'text-muted-foreground',
           )}
         >
           {icon}

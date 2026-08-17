@@ -20,6 +20,7 @@ import { BottomNav } from '@/components/layout/bottom-nav'
 import { HelpFab } from '@/components/layout/help-fab'
 import { ClaimTypeIcon } from '@/components/common/claim-type-icon'
 import { Amount } from '@/components/common/amount'
+import { Callout } from '@/components/common/callout'
 import { AppButton } from '@/components/ui/app-button'
 import { useLanguage } from '@/context/language-context'
 import { useClaim } from '@/context/claim-context'
@@ -111,9 +112,11 @@ export default function ClaimDetailPage({
       <TopBar title={t('claim.detail.title')} />
 
       <div className="flex-1 overflow-y-auto no-scrollbar px-5 pb-32">
-        {/* Hero */}
+        {/* Hero — the one place this earns a badge treatment */}
         <div className="mt-2 flex items-center gap-3">
-          <ClaimTypeIcon type={claim.type} className="size-14 rounded-2xl" />
+          <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-pine-soft">
+            <ClaimTypeIcon type={claim.type} className="size-6" />
+          </span>
           <div className="min-w-0">
             <h1 className="font-display text-xl font-extrabold leading-tight">
               {claim.typeLabel}
@@ -126,7 +129,7 @@ export default function ClaimDetailPage({
 
         {/* Amount ticket */}
         <div className="ticket-notch relative mt-5 overflow-hidden rounded-3xl bg-gold-soft p-5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gold-foreground/60">
+          <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground/70">
             {t('claim.amount')}
           </p>
           <div className="mt-1">
@@ -204,16 +207,28 @@ export default function ClaimDetailPage({
           </motion.section>
         )}
 
-        {/* Meta grid */}
-        <dl className="mt-5 grid grid-cols-2 gap-3">
-          <Meta label={t('claim.institution')} value={claim.institution} />
-          <Meta label={t('claim.type')} value={claim.typeLabel} />
-          <Meta label={t('claim.year')} value={String(claim.year)} />
-          <Meta label={t('claim.ref')} value={claim.id} mono />
-        </dl>
+        {/* Year + reference — the two facts the hero doesn't already show,
+            in one row instead of four competing boxes. */}
+        <div className="mt-5 flex items-center divide-x divide-border rounded-2xl bg-card ring-1 ring-border">
+          <div className="flex-1 px-4 py-3">
+            <dt className="text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t('claim.year')}
+            </dt>
+            <dd className="mt-0.5 text-sm font-bold">{claim.year}</dd>
+          </div>
+          <div className="flex-1 px-4 py-3">
+            <dt className="text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t('claim.ref')}
+            </dt>
+            <dd className="tabular mt-0.5 truncate font-mono text-sm font-bold">
+              {claim.id}
+            </dd>
+          </div>
+        </div>
 
-        {/* About */}
-        <section className="mt-6 rounded-2xl bg-card p-4 ring-1 ring-border">
+        {/* About — the one card on this screen that earns full weight,
+            since it's the trust-building explanation of what the money is. */}
+        <section className="mt-4 rounded-2xl bg-card p-4 ring-1 ring-border">
           <h2 className="flex items-center gap-2 font-display text-sm font-bold">
             <Info className="size-4 text-pine" />
             {t('claim.about')}
@@ -232,33 +247,30 @@ export default function ClaimDetailPage({
           )}
         </section>
 
-        {/* Docs needed — driven by the claim's own requirements, not a
-            generic list, so the checklist matches what actually gets asked. */}
+        {/* Docs needed — one container with divided rows instead of a
+            stack of separate cards, driven by this claim's own requirements. */}
         <section className="mt-5">
-          <h2 className="mb-3 font-display text-sm font-bold">
+          <h2 className="mb-2 px-1 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             {t('claim.docs.needed')}
           </h2>
-          <ul className="flex flex-col gap-2">
+          <ul className="overflow-hidden rounded-2xl border border-border bg-card divide-y divide-border">
             {claim.requiredDocs.map((docId) => {
               const doc = getDocument(docId)
               if (!doc) return null
               const inVault = VAULT_DOC_IDS.includes(docId)
               return (
-                <li
-                  key={docId}
-                  className="flex items-center gap-3 rounded-2xl bg-card p-3 ring-1 ring-border"
-                >
+                <li key={docId} className="flex items-center gap-3 px-4 py-3">
                   <span
                     className={
                       inVault
-                        ? 'flex size-9 shrink-0 items-center justify-center rounded-xl bg-pine text-pine-foreground'
-                        : 'flex size-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-muted-foreground'
+                        ? 'flex size-8 shrink-0 items-center justify-center rounded-lg bg-pine text-pine-foreground'
+                        : 'flex size-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground'
                     }
                   >
                     {inVault ? (
                       <Check className="size-4" strokeWidth={3} />
                     ) : (
-                      <Info className="size-4" />
+                      <Info className="size-3.5" />
                     )}
                   </span>
                   <span className="min-w-0 flex-1">
@@ -275,10 +287,12 @@ export default function ClaimDetailPage({
           </ul>
         </section>
 
-        <p className="mt-5 flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground">
-          <Clock className="size-4" />
+        <Callout
+          icon={<Clock className="size-4" />}
+          className="mt-5 justify-center text-center"
+        >
           {institution?.processingTime ?? t('claim.estimate')}
-        </p>
+        </Callout>
       </div>
 
       {/* Sticky CTA — hidden when one-click already offers both routes above */}
@@ -294,28 +308,5 @@ export default function ClaimDetailPage({
       <HelpFab className={oneClickReady ? undefined : 'bottom-32'} />
       <BottomNav />
     </MobileContainer>
-  )
-}
-
-function Meta({
-  label,
-  value,
-  mono,
-}: {
-  label: string
-  value: string
-  mono?: boolean
-}) {
-  return (
-    <div className="rounded-2xl bg-card p-3 ring-1 ring-border">
-      <dt className="text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground">
-        {label}
-      </dt>
-      <dd
-        className={`mt-0.5 text-sm font-bold ${mono ? 'tabular font-mono' : ''}`}
-      >
-        {value}
-      </dd>
-    </div>
   )
 }

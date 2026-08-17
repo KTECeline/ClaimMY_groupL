@@ -88,9 +88,7 @@ export default function FamilyResultsPage({
               className="rounded-2xl border border-border bg-card p-4"
             >
               <div className="flex items-center gap-3">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-pine">
-                  <ClaimTypeIcon type={claim.type} className="size-5" />
-                </span>
+                <ClaimTypeIcon type={claim.type} className="size-5 shrink-0" />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold leading-snug">
                     {claim.typeLabel}

@@ -3,7 +3,15 @@
 import { motion } from 'motion/react'
 import { useMemo } from 'react'
 
-const COLORS = ['var(--gold)', 'var(--pine)', 'var(--clay)', 'var(--teal)']
+// This only ever renders on the pine-background success screen, so every
+// color has to actually show up against dark teal — the base gold/pine/clay/
+// teal tokens are all similarly dark now and would just disappear into it.
+const COLORS = [
+  'var(--gold-bright)',
+  'var(--pine-foreground)',
+  'var(--pine-soft)',
+  'var(--clay-soft)',
+]
 
 export function ConfettiBurst({ count = 28 }: { count?: number }) {
   const pieces = useMemo(

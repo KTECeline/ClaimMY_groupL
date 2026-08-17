@@ -50,6 +50,7 @@
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
   --color-gold-soft: var(--gold-soft);
+  --color-gold-bright: var(--gold-bright);
   --color-clay: var(--clay);
   --color-clay-foreground: var(--clay-foreground);
   --color-clay-soft: var(--clay-soft);
@@ -70,65 +71,81 @@
 :root {
   color-scheme: light;
 
-  /* Core neutrals — warm paper, not gray */
-  --ink: #15241e;
-  --paper: #f3efe5;
+  /* Core neutrals — near-white, cool and quiet, so the teal + green actually
+     get to be the vibrant thing on the screen instead of competing with a
+     warm background. */
+  --ink: #16262a;
+  --paper: #f4f7f5;
 
-  --background: #f3efe5;
-  --foreground: #15241e;
-  --card: #fbf9f3;
-  --card-foreground: #15241e;
-  --popover: #fbf9f3;
-  --popover-foreground: #15241e;
+  --background: #f4f7f5;
+  --foreground: #16262a;
+  --card: #ffffff;
+  --card-foreground: #16262a;
+  --popover: #ffffff;
+  --popover-foreground: #16262a;
 
-  /* Pine — primary brand (deep emerald-teal) */
-  --pine: #0c6b52;
-  --pine-foreground: #f3efe5;
-  --pine-soft: #d7e7df;
+  /* "Pine" token — a real saturated teal now, not a desaturated navy. This
+     is the "vibrant but formal" primary: rich enough to feel alive, dark
+     enough to stay serious. Kept the variable name so every bg-pine/
+     text-pine class repaints from one place. */
+  --pine: #1d6e82;
+  --pine-foreground: #ffffff;
+  --pine-soft: #cfeae8;
 
-  /* Gold — signature accent (ringgit gold) */
-  --gold: #c98a1f;
-  --gold-foreground: #15241e;
-  --gold-soft: #f5e6c8;
+  /* "Gold" token — a genuinely different hue again, but a saturated grass
+     green instead of amber/gold, so it reads as "nature-vibrant," not
+     "money-gold." This is the second real color, not just a tonal shift. */
+  --gold: #2f6b25;
+  --gold-foreground: #ffffff;
+  --gold-soft: #dcead1;
+  /* The dark accent green above reads fine on light surfaces, but on the
+     handful of screens whose whole background *is* pine (dark teal), a
+     same-depth dark green all but disappears against it. This is the bright
+     lime companion for exactly those spots — pair with a dark icon/text
+     color on top, not gold-foreground (white), since the fill itself is now
+     light. */
+  --gold-bright: #9be37d;
 
-  --primary: #0c6b52;
-  --primary-foreground: #f7f9f6;
-  --secondary: #e7e2d4;
-  --secondary-foreground: #15241e;
-  --muted: #e7e2d4;
-  --muted-foreground: #5f6b62;
-  --accent: #f5e6c8;
-  --accent-foreground: #5a3d09;
+  --primary: #1d6e82;
+  --primary-foreground: #ffffff;
+  --secondary: #e6eeec;
+  --secondary-foreground: #16262a;
+  --muted: #e6eeec;
+  --muted-foreground: #576865;
+  --accent: #dcead1;
+  --accent-foreground: #16262a;
 
-  --success: #0c6b52;
-  --warning: #c98a1f;
+  --success: #2f6b25;
+  --warning: #2f6b25;
   --clay: #b23b2c;
-  --clay-foreground: #f7f9f6;
+  --clay-foreground: #ffffff;
   --clay-soft: #f3dcd6;
-  --teal: #4a917a;
+  /* "Teal" token — a brighter, lighter teal than primary, for a third pop
+     of variety (avatars, confetti) that still lives in the same family. */
+  --teal: #357893;
   --destructive: #b23b2c;
-  --destructive-foreground: #f7f9f6;
+  --destructive-foreground: #ffffff;
 
-  --border: #ddd6c5;
-  --input: #ddd6c5;
-  --ring: #0c6b52;
+  --border: #d5e2e0;
+  --input: #d5e2e0;
+  --ring: #1d6e82;
 
-  --chart-1: #0c6b52;
-  --chart-2: #c98a1f;
-  --chart-3: #4a917a;
-  --chart-4: #d9b25f;
-  --chart-5: #15241e;
+  --chart-1: #1d6e82;
+  --chart-2: #2f6b25;
+  --chart-3: #357893;
+  --chart-4: #576865;
+  --chart-5: #16262a;
 
   --radius: 1rem;
 
-  --sidebar: #fbf9f3;
-  --sidebar-foreground: #15241e;
-  --sidebar-primary: #0c6b52;
-  --sidebar-primary-foreground: #f7f9f6;
-  --sidebar-accent: #f5e6c8;
-  --sidebar-accent-foreground: #5a3d09;
-  --sidebar-border: #ddd6c5;
-  --sidebar-ring: #0c6b52;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #16262a;
+  --sidebar-primary: #1d6e82;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #dcead1;
+  --sidebar-accent-foreground: #16262a;
+  --sidebar-border: #d5e2e0;
+  --sidebar-ring: #1d6e82;
 }
 
 @layer base {
@@ -221,9 +238,9 @@ html[data-simple='true'] [class*='border-border'] {
 
 /* Optional extra contrast for low-vision users. */
 html[data-contrast='high'] {
-  --muted-foreground: #3d4a42;
-  --border: #b6ab90;
-  --input: #b6ab90;
+  --muted-foreground: #33413f;
+  --border: #9db8b3;
+  --input: #9db8b3;
 }
 
 /* Focus is always visible — never removed, never relying on colour alone. */

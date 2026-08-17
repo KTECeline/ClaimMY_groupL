@@ -67,7 +67,7 @@ export default function SecurityPage() {
       <h2 className="mb-2 px-1 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
         {t('sec.group.sessions')}
       </h2>
-      <ul className="flex flex-col gap-2.5">
+      <ul className="overflow-hidden rounded-2xl border border-border bg-card divide-y divide-border">
         {sessions.map((session, i) => (
           <motion.li
             key={session.id}
@@ -76,9 +76,9 @@ export default function SecurityPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ delay: 0.05 * i }}
-            className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4"
+            className="flex items-center gap-3 px-4 py-3.5"
           >
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-pine">
+            <span className="flex size-5 shrink-0 items-center justify-center text-muted-foreground">
               {session.current ? (
                 <Smartphone className="size-4" />
               ) : (

@@ -9,8 +9,12 @@ const appButton = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-pine text-pine-foreground hover:bg-pine/90 shadow-[0_6px_20px_-8px_rgba(12,107,82,0.7)]',
-        gold: 'bg-gold text-gold-foreground hover:bg-gold/90 shadow-[0_6px_20px_-8px_rgba(201,138,31,0.7)]',
+        // Flat fills, no colored glow — a solid color + a slightly darker
+        // hover state reads as a real native button; a soft drop-shadow
+        // tinted to match the fill is the single most common "AI dashboard"
+        // tell, so it's gone everywhere, not just here.
+        primary: 'bg-pine text-pine-foreground hover:bg-pine/90',
+        gold: 'bg-gold text-gold-foreground hover:bg-gold/90',
         outline: 'border-2 border-pine/25 text-pine bg-transparent hover:bg-pine/5',
         soft: 'bg-pine-soft text-pine hover:bg-pine-soft/70',
         ghost: 'text-foreground hover:bg-foreground/5',

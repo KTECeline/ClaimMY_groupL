@@ -80,6 +80,9 @@ export default function ProfilePage() {
 
         <div className="my-5 h-px bg-border" />
 
+        {/* Account — personal, financial, and language settings live at the
+            same "who you are in this app" level, so they share one group
+            instead of language getting its own box for a single row. */}
         <SectionGroup label={t('profile.group.account')}>
           <SectionRow
             icon={<User className="size-4" />}
@@ -99,9 +102,6 @@ export default function ProfilePage() {
             hint={t('profile.vault.hint')}
             href="/settings/vault"
           />
-        </SectionGroup>
-
-        <SectionGroup label={t('profile.group.language')}>
           <SectionRow
             icon={<Globe className="size-4" />}
             label={t('profile.language')}
@@ -110,6 +110,9 @@ export default function ProfilePage() {
           />
         </SectionGroup>
 
+        {/* Preferences & alerts — everything that changes how the app
+            behaves, grouped together rather than split by a security/
+            notifications line that doesn't matter to the user. */}
         <SectionGroup label={t('profile.group.notifications')}>
           <SectionRow
             icon={<Bell className="size-4" />}
@@ -129,9 +132,6 @@ export default function ProfilePage() {
             hint={t('profile.settings.hint')}
             href="/settings/preferences"
           />
-        </SectionGroup>
-
-        <SectionGroup label={t('profile.group.security')}>
           <SectionRow
             icon={<ShieldCheck className="size-4" />}
             label={t('profile.security')}

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { AppShell } from '@/components/layout/app-shell'
 import { StatusBadge } from '@/components/common/status-badge'
+import { Callout } from '@/components/common/callout'
 import { AppButton } from '@/components/ui/app-button'
 import { VaultLock } from '@/components/vault/vault-lock'
 import { useLanguage } from '@/context/language-context'
@@ -75,7 +76,10 @@ export default function VaultPage() {
         {t('vault.group')}
       </h2>
 
-      <ul className="flex flex-col gap-2.5">
+      {/* One container, divided rows — five separate elevated cards for a
+          document list was more weight than the content needed. A row that
+          needs a warning gets a left accent stripe instead of its own box. */}
+      <ul className="overflow-hidden rounded-2xl border border-border bg-card divide-y divide-border">
         <AnimatePresence initial={false}>
           {docs.map((doc, i) => {
             const isStored = doc.status === 'stored'
@@ -88,20 +92,16 @@ export default function VaultPage() {
                 exit={{ opacity: 0, x: -24 }}
                 transition={{ delay: 0.04 * i }}
                 className={cn(
-                  'flex items-center gap-3 rounded-2xl border bg-card p-4',
-                  doc.expiringSoon ? 'border-gold/50' : 'border-border',
+                  'flex items-center gap-3 border-l-2 px-4 py-3.5',
+                  doc.expiringSoon ? 'border-l-gold' : 'border-l-transparent',
                 )}
               >
-                <span
+                <FileText
                   className={cn(
-                    'flex size-10 shrink-0 items-center justify-center rounded-xl',
-                    isStored
-                      ? 'bg-pine-soft text-pine'
-                      : 'bg-secondary text-muted-foreground',
+                    'size-5 shrink-0',
+                    isStored ? 'text-pine' : 'text-muted-foreground',
                   )}
-                >
-                  <FileText className="size-5" />
-                </span>
+                />
 
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-semibold leading-snug">
@@ -150,12 +150,9 @@ export default function VaultPage() {
         {t('vault.add')}
       </button>
 
-      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
-        <Lock className="mt-0.5 size-4 shrink-0 text-pine" />
-        <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
-          {t('vault.privacy')}
-        </p>
-      </div>
+      <Callout icon={<Lock className="size-4" />} className="mt-6">
+        {t('vault.privacy')}
+      </Callout>
 
       {stored.length > 0 && (
         <AppButton

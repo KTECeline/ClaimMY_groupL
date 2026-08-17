@@ -102,8 +102,7 @@ export default function ResultsPage() {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="ticket-notch relative mt-2 overflow-hidden rounded-3xl bg-pine p-6 text-pine-foreground"
         >
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_90%_at_90%_0%,rgba(201,138,31,0.25),transparent_55%)]" />
-          <div className="relative flex items-center gap-2 text-sm font-semibold text-gold">
+          <div className="relative flex items-center gap-2 text-sm font-semibold text-gold-bright">
             <PartyPopper className="size-4" />
             {t('results.found')}
           </div>
@@ -123,7 +122,7 @@ export default function ResultsPage() {
           {/* The payoff of the MyDigital ID mock — confirms this was pulled
               via the linked government login, not typed in manually. */}
           {verifiedSearch && (
-            <div className="relative mt-3 inline-flex items-center gap-1.5 rounded-full bg-pine-foreground/12 px-3 py-1.5 text-xs font-bold text-gold">
+            <div className="relative mt-3 inline-flex items-center gap-1.5 rounded-full bg-pine-foreground/12 px-3 py-1.5 text-xs font-bold text-gold-bright">
               <ShieldCheck className="size-3.5" />
               {t('mydigital.results.badge')}
             </div>

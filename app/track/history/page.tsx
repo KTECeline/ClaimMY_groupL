@@ -69,7 +69,7 @@ export default function ClaimsHistoryPage() {
             body={t('hist.empty.body')}
           />
         ) : (
-          <ul className="flex flex-col gap-3">
+          <ul className="overflow-hidden rounded-2xl border border-border bg-card divide-y divide-border">
             {visible.map((claim, i) => {
               const rejected = claim.status === 'rejected'
               const done = claim.status === 'done'
@@ -79,7 +79,7 @@ export default function ClaimsHistoryPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * i }}
-                  className="rounded-2xl border border-border bg-card p-4"
+                  className="px-4 py-3.5"
                 >
                   <div className="flex items-start gap-3">
                     <span className="min-w-0 flex-1">
@@ -136,9 +136,7 @@ export default function ClaimsHistoryPage() {
         data-tap
         className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3.5 text-left transition-colors hover:bg-pine-soft/30"
       >
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-pine-soft text-pine">
-          <Download className="size-4" />
-        </span>
+        <Download className="size-5 shrink-0 text-pine" />
         <span className="flex-1 text-sm font-semibold">{t('hist.export')}</span>
         <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
       </button>

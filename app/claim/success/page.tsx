@@ -72,7 +72,7 @@ export default function SuccessPage() {
           initial={{ scale: 0, rotate: -30 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 220, damping: 14, delay: 0.1 }}
-          className="relative z-10 flex size-24 items-center justify-center rounded-full bg-gold text-gold-foreground shadow-[0_12px_40px_-8px_rgba(201,138,31,0.6)]"
+          className="relative z-10 flex size-24 items-center justify-center rounded-full bg-gold-bright text-ink"
         >
           <Check className="size-12" strokeWidth={3} />
         </motion.div>
@@ -168,7 +168,7 @@ export default function SuccessPage() {
             data-tap
             className="flex h-14 items-center justify-center gap-2.5 rounded-2xl border-2 border-pine-foreground/25 font-bold transition-colors hover:bg-pine-foreground/10"
           >
-            <BellRing className="size-5 text-gold" />
+            <BellRing className="size-5 text-gold-bright" />
             {t('confirm.notify')}
           </button>
         )}

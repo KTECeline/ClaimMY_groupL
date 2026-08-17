@@ -62,7 +62,7 @@ export default function SearchingPage() {
                 className={cn(
                   'flex items-center gap-3 rounded-2xl border px-4 py-3 transition-colors',
                   complete
-                    ? 'border-gold/40 bg-white/10'
+                    ? 'border-gold-bright/40 bg-white/10'
                     : 'border-white/10 bg-white/[0.04]',
                 )}
               >
@@ -73,7 +73,7 @@ export default function SearchingPage() {
                         key="check"
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="flex size-7 items-center justify-center rounded-full bg-gold text-gold-foreground"
+                        className="flex size-7 items-center justify-center rounded-full bg-gold-bright text-ink"
                       >
                         <Check className="size-4" strokeWidth={3} />
                       </motion.span>

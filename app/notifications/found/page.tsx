@@ -28,8 +28,6 @@ export default function NewClaimFoundPage() {
 
   return (
     <MobileContainer className="bg-pine text-pine-foreground">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[radial-gradient(120%_80%_at_50%_0%,rgba(201,138,31,0.28),transparent_62%)]" />
-
       <header className="relative px-5 pt-6">
         <p className="text-center text-sm font-semibold text-pine-foreground/60">
           {t('found.title')}
@@ -41,7 +39,7 @@ export default function NewClaimFoundPage() {
           initial={{ scale: 0, rotate: -20 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 240, damping: 15 }}
-          className="flex size-24 items-center justify-center rounded-[2rem] bg-gold text-gold-foreground shadow-[0_16px_44px_-12px_rgba(201,138,31,0.7)]"
+          className="flex size-24 items-center justify-center rounded-[2rem] bg-gold-bright text-ink"
         >
           <PartyPopper className="size-11" strokeWidth={2} />
         </motion.span>
@@ -85,7 +83,7 @@ export default function NewClaimFoundPage() {
         </motion.div>
 
         <div className="mt-6 flex items-start gap-3 rounded-2xl bg-pine-foreground/8 p-4 text-left ring-1 ring-pine-foreground/10">
-          <Info className="mt-0.5 size-4 shrink-0 text-gold" />
+          <Info className="mt-0.5 size-4 shrink-0 text-gold-bright" />
           <p className="text-sm leading-relaxed text-pine-foreground/75 text-pretty">
             {t('found.note')}
           </p>

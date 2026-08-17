@@ -33,10 +33,10 @@ export function ResultCard({
     >
       <Link
         href={`/claim/${claim.id}`}
-        className="block rounded-3xl bg-card p-4 ring-1 ring-border transition-all hover:ring-pine/40 hover:shadow-[0_14px_30px_-22px_rgba(12,107,82,0.5)]"
+        className="block rounded-3xl bg-card p-4 ring-1 ring-border transition-colors hover:ring-pine/40"
       >
         <div className="flex items-start gap-3">
-          <ClaimTypeIcon type={claim.type} />
+          <ClaimTypeIcon type={claim.type} className="mt-0.5 size-5 shrink-0" />
           <div className="min-w-0 flex-1">
             <p className="truncate font-display text-[0.95rem] font-bold text-foreground">
               {claim.typeLabel}

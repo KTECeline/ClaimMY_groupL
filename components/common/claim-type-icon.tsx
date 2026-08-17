@@ -17,6 +17,12 @@ const MAP: Record<ClaimType, LucideIcon> = {
   court: Scale,
 }
 
+/**
+ * A bare glyph, not a colored chip. Wrapping every type icon in the same
+ * soft-tint rounded square is what made every list row look identical —
+ * callers that genuinely need a badge (a hero moment, an avatar) build one
+ * explicitly; ordinary list rows just get the icon inline with the text.
+ */
 export function ClaimTypeIcon({
   type,
   className,
@@ -25,14 +31,5 @@ export function ClaimTypeIcon({
   className?: string
 }) {
   const Icon = MAP[type] ?? Landmark
-  return (
-    <span
-      className={cn(
-        'flex size-12 shrink-0 items-center justify-center rounded-2xl bg-pine-soft text-pine',
-        className,
-      )}
-    >
-      <Icon className="size-6" strokeWidth={2.2} />
-    </span>
-  )
+  return <Icon className={cn('text-pine', className)} strokeWidth={2.2} />
 }

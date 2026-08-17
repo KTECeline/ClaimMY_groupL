@@ -32,7 +32,7 @@ export function ICSearchInput() {
   }
 
   return (
-    <div className="rounded-3xl bg-card p-5 shadow-[0_18px_40px_-24px_rgba(12,107,82,0.45)] ring-1 ring-border">
+    <div className="rounded-3xl bg-card p-5 shadow-lg shadow-ink/10 ring-1 ring-border">
       <label
         htmlFor="ic-input"
         className="flex items-center gap-2 text-sm font-semibold text-foreground"
