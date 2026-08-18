@@ -27,7 +27,10 @@ export function MobileContainer({
         <div className="pointer-events-none absolute top-0 left-1/2 z-50 hidden h-6 w-32 -translate-x-1/2 rounded-b-2xl bg-[#0e1f1e] sm:block" />
         <div
           className={cn(
-            'relative flex min-h-dvh sm:min-h-[844px] flex-col bg-background',
+            // Fixed (not min-) height on sm+ so the phone frame is always
+            // the same size regardless of a screen's content length — long
+            // screens scroll *inside* the frame instead of stretching it.
+            'relative flex min-h-dvh flex-col overflow-y-auto bg-background sm:h-[844px]',
             className,
           )}
         >
