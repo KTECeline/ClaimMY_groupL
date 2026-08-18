@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
-import { Users, FileText, Bell, LifeBuoy, ArrowRight, Search } from 'lucide-react'
+import { Users, FileText, Bell, HelpCircle, ArrowRight, Search } from 'lucide-react'
 import { MobileContainer } from '@/components/layout/mobile-container'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { HelpFab } from '@/components/layout/help-fab'
@@ -14,13 +14,13 @@ import { CoachMarks } from '@/components/common/coach-marks'
 import { useLanguage } from '@/context/language-context'
 import { useClaim, TOTAL_STEPS } from '@/context/claim-context'
 import { useSettings } from '@/context/settings-context'
-import { SEARCH_SOURCES } from '@/lib/mock-data'
+import { INSTITUTIONS } from '@/lib/mock-data'
 
 const quickActions = [
   { href: '/family', icon: Users, key: 'home.q.family' },
   { href: '/track', icon: FileText, key: 'home.q.track' },
   { href: '/notifications', icon: Bell, key: 'home.q.notify' },
-  { href: '/settings/help', icon: LifeBuoy, key: 'home.q.help' },
+  { href: '/settings/help', icon: HelpCircle, key: 'home.q.help' },
 ]
 
 /**
@@ -131,7 +131,10 @@ export default function HomePage() {
 
         {/* Reassurance, not another action — fills the room the "one job"
             layout leaves under Quick Actions with the reason to trust the
-            search rather than a fifth competing button. */}
+            search rather than a fifth competing button. Real institutions,
+            not decorative labels — each chip opens that institution's own
+            S-09 info page, so "we search these for you" is a claim you can
+            immediately go verify. */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -143,13 +146,14 @@ export default function HomePage() {
             {t('home.institutions')}
           </p>
           <div className="mt-2.5 flex flex-wrap gap-2">
-            {SEARCH_SOURCES.map((source) => (
-              <span
-                key={source}
-                className="rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground ring-1 ring-border"
+            {INSTITUTIONS.map((institution) => (
+              <Link
+                key={institution.slug}
+                href={`/institution/${institution.slug}`}
+                className="rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground ring-1 ring-border transition-colors hover:ring-pine/40 hover:text-pine"
               >
-                {source}
-              </span>
+                {institution.shortName}
+              </Link>
             ))}
           </div>
         </motion.div>

@@ -52,7 +52,7 @@ const en: Dict = {
   'home.q.family': 'Family Mode',
   'home.q.track': 'Track claims',
   'home.q.notify': 'Alerts',
-  'home.q.help': 'Settings',
+  'home.q.help': 'FAQ',
 
   // Results
   'results.title': 'Search results',
@@ -688,7 +688,7 @@ const bm: Dict = {
   'home.q.family': 'Mod Keluarga',
   'home.q.track': 'Jejak tuntutan',
   'home.q.notify': 'Peringatan',
-  'home.q.help': 'Tetapan',
+  'home.q.help': 'FAQ',
 
   'results.title': 'Keputusan carian',
   'results.total': 'Jumlah boleh dituntut',
