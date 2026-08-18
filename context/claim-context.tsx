@@ -154,7 +154,10 @@ export function ClaimProvider({ children }: { children: ReactNode }) {
           return next
         }),
       resetWizard: () => setWizard(defaultWizard),
-      hasDraft: activeClaim !== null && wizard.furthestStep > 1,
+      // Any claim you've started and not finished counts — even if you
+      // stopped right at step 1 (picking who it's for), that's still a
+      // claim sitting half-done, not nothing.
+      hasDraft: activeClaim !== null,
       lastRef,
       setLastRef,
       submittedClaims,

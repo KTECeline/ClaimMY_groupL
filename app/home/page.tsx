@@ -14,7 +14,6 @@ import { CoachMarks } from '@/components/common/coach-marks'
 import { useLanguage } from '@/context/language-context'
 import { useClaim, TOTAL_STEPS } from '@/context/claim-context'
 import { useSettings } from '@/context/settings-context'
-import { INSTITUTIONS } from '@/lib/mock-data'
 
 const quickActions = [
   { href: '/family', icon: Users, key: 'home.q.family' },
@@ -34,7 +33,9 @@ const quickActions = [
 export default function HomePage() {
   const router = useRouter()
   const { t } = useLanguage()
-  const { activeClaim, wizard, hasDraft } = useClaim()
+  const { activeClaim, wizard, hasDraft, searchedIC, results } = useClaim()
+  const claimableCount = results.filter((c) => c.status === 'claimable').length
+  const hasPastSearch = !hasDraft && Boolean(searchedIC) && claimableCount > 0
   const { profile } = useSettings()
 
   const coachMarks = [1, 2, 3].map((n) => ({
@@ -71,12 +72,40 @@ export default function HomePage() {
           <ICSearchInput />
         </div>
 
-        {/* Resume — only when there's genuinely a draft to resume */}
+        {/* Quick actions — icon row, no boxed heading needed */}
+        <div className="mt-7 grid grid-cols-4 gap-2.5">
+          {quickActions.map(({ href, icon: Icon, key }, i) => (
+            <motion.div
+              key={href}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.04 * i }}
+            >
+              <Link
+                href={href}
+                className="flex flex-col items-center gap-1.5 rounded-2xl py-3 transition-colors hover:bg-secondary"
+              >
+                <span className="flex size-11 items-center justify-center rounded-2xl bg-card text-pine ring-1 ring-border">
+                  <Icon className="size-5" />
+                </span>
+                <span className="text-center text-[0.68rem] font-semibold leading-tight text-muted-foreground">
+                  {t(key)}
+                </span>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Resume — below Quick Actions, not above: this is a callback to
+            something you started, not part of the primary "search or
+            resume" job at the top. Only a draft or a past search ever
+            shows, never both — a draft in progress outranks a past search. */}
         {hasDraft && activeClaim && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4"
+            transition={{ delay: 0.2 }}
+            className="mt-7"
           >
             <Link
               href={`/claim/wizard/step-${Math.min(wizard.furthestStep, TOTAL_STEPS)}`}
@@ -105,58 +134,35 @@ export default function HomePage() {
           </motion.div>
         )}
 
-        {/* Quick actions — icon row, no boxed heading needed */}
-        <div className="mt-7 grid grid-cols-4 gap-2.5">
-          {quickActions.map(({ href, icon: Icon, key }, i) => (
-            <motion.div
-              key={href}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.04 * i }}
+        {hasPastSearch && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mt-7"
+          >
+            <Link
+              href="/results"
+              className="flex items-center gap-3 rounded-2xl border-2 border-pine/25 bg-pine-soft/40 p-4 transition-colors hover:bg-pine-soft/60"
             >
-              <Link
-                href={href}
-                className="flex flex-col items-center gap-1.5 rounded-2xl py-3 transition-colors hover:bg-secondary"
-              >
-                <span className="flex size-11 items-center justify-center rounded-2xl bg-card text-pine ring-1 ring-border">
-                  <Icon className="size-5" />
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-pine/15 text-pine">
+                <Search className="size-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-bold">
+                  {t('home.resume.title')}
                 </span>
-                <span className="text-center text-[0.68rem] font-semibold leading-tight text-muted-foreground">
-                  {t(key)}
+                <span className="block truncate text-xs text-muted-foreground">
+                  {t('home.resume.search.body', { n: claimableCount })}
                 </span>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Reassurance, not another action — fills the room the "one job"
-            layout leaves under Quick Actions with the reason to trust the
-            search rather than a fifth competing button. Real institutions,
-            not decorative labels — each chip opens that institution's own
-            S-09 info page, so "we search these for you" is a claim you can
-            immediately go verify. */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mt-8"
-        >
-          <p className="flex items-center gap-1.5 px-1 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            <Search className="size-3" />
-            {t('home.institutions')}
-          </p>
-          <div className="mt-2.5 flex flex-wrap gap-2">
-            {INSTITUTIONS.map((institution) => (
-              <Link
-                key={institution.slug}
-                href={`/institution/${institution.slug}`}
-                className="rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground ring-1 ring-border transition-colors hover:ring-pine/40 hover:text-pine"
-              >
-                {institution.shortName}
-              </Link>
-            ))}
-          </div>
-        </motion.div>
+              </span>
+              <span className="flex shrink-0 items-center gap-1 rounded-full bg-pine px-3 py-1.5 text-xs font-bold text-pine-foreground">
+                {t('home.resume.cta')}
+                <ArrowRight className="size-3.5" />
+              </span>
+            </Link>
+          </motion.div>
+        )}
       </main>
 
       <CoachMarks marks={coachMarks} flag="home" />
