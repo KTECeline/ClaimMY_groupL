@@ -7,7 +7,6 @@ import {
   Bell,
   CreditCard,
   FileLock2,
-  Globe,
   Info,
   LifeBuoy,
   LogOut,
@@ -27,7 +26,6 @@ import { PhoneOverlay } from '@/components/layout/phone-overlay'
 import { useLanguage } from '@/context/language-context'
 import { useSettings } from '@/context/settings-context'
 import { useToast } from '@/context/toast-context'
-import { LANGUAGES } from '@/lib/i18n/dictionary'
 import { NOTIFICATIONS } from '@/lib/mock-data'
 import { clearPersistedState } from '@/lib/use-persistent-state'
 
@@ -38,14 +36,13 @@ import { clearPersistedState } from '@/lib/use-persistent-state'
  */
 export default function ProfilePage() {
   const router = useRouter()
-  const { t, lang } = useLanguage()
+  const { t } = useLanguage()
   const { profile, updateProfile } = useSettings()
   const { show } = useToast()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(profile)
 
   const unread = NOTIFICATIONS.filter((n) => n.unread).length
-  const currentLang = LANGUAGES.find((l) => l.code === lang)
 
   function openEdit() {
     setDraft(profile)
@@ -94,19 +91,13 @@ export default function ProfilePage() {
             icon={<CreditCard className="size-4" />}
             label={t('profile.bank')}
             hint={t('profile.bank.hint')}
-            href="/settings/preferences"
+            href="/settings/bank"
           />
           <SectionRow
             icon={<FileLock2 className="size-4" />}
             label={t('profile.vault')}
             hint={t('profile.vault.hint')}
             href="/settings/vault"
-          />
-          <SectionRow
-            icon={<Globe className="size-4" />}
-            label={t('profile.language')}
-            hint={currentLang?.native}
-            href="/settings/preferences"
           />
         </SectionGroup>
 

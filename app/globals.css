@@ -71,48 +71,52 @@
 :root {
   color-scheme: light;
 
-  /* Core neutrals — near-white, cool and quiet, so the teal + green actually
-     get to be the vibrant thing on the screen instead of competing with a
-     warm background. */
+  /* Core neutrals — round three, user-supplied palette applied directly
+     (Old Lace / Grapefruit Pink / Apricot Cream / Turquoise / Cerulean),
+     not a tint of the old teal+green system. Background goes warm cream
+     instead of cool gray, which is what actually makes the whole page feel
+     different rather than just the accent. */
   --ink: #16262a;
-  --paper: #f4f7f5;
+  --paper: #fff8e9;
 
-  --background: #f4f7f5;
+  --background: #fff8e9;
   --foreground: #16262a;
   --card: #ffffff;
   --card-foreground: #16262a;
   --popover: #ffffff;
   --popover-foreground: #16262a;
 
-  /* "Pine" token — a real saturated teal now, not a desaturated navy. This
-     is the "vibrant but formal" primary: rich enough to feel alive, dark
-     enough to stay serious. Kept the variable name so every bg-pine/
-     text-pine class repaints from one place. */
-  --pine: #1d6e82;
+  /* "Pine" token — now Cerulean, not teal. Kept the variable name so every
+     bg-pine/text-pine class repaints from one place. Note: white text on
+     this lands at ~4.3:1 — reads fine for the bold/large headers and
+     buttons it's used on, just short of the 4.5:1 body-text floor. */
+  --pine: #2584a7;
   --pine-foreground: #ffffff;
-  --pine-soft: #cfeae8;
+  --pine-soft: #d3e6ed;
 
-  /* "Gold" token — a genuinely different hue again, but a saturated grass
-     green instead of amber/gold, so it reads as "nature-vibrant," not
-     "money-gold." This is the second real color, not just a tonal shift. */
-  --gold: #2f6b25;
-  --gold-foreground: #ffffff;
-  --gold-soft: #dcead1;
-  /* The dark accent green above reads fine on light surfaces, but on the
-     handful of screens whose whole background *is* pine (dark teal), a
-     same-depth dark green all but disappears against it. This is the bright
-     lime companion for exactly those spots — pair with a dark icon/text
-     color on top, not gold-foreground (white), since the fill itself is now
-     light. */
-  --gold-bright: #9be37d;
+  /* "Gold" token — now Grapefruit Pink, the vibrant coral-red from the
+     palette. It's light enough that dark ink text works on top of it
+     (fills/badges, ~5.7:1 — safe) but the color itself is too light to use
+     AS text on a light page: gold directly on paper/white lands ~2.7:1,
+     below even the relaxed 3:1 icon floor. That hits a handful of spots
+     (View & claim, Use demo IC, a couple of icons) — say if you want those
+     specific ones fixed; leaving them as literal gold-on-paper per "strictly." */
+  --gold: #fe6d73;
+  --gold-foreground: #16262a;
+  --gold-soft: #ffe9ea;
+  /* Apricot Cream — the palette's other warm color, for screens whose
+     whole background *is* pine (Cerulean). Same caveat as gold: fine as a
+     fill with dark ink on top, but low contrast (~2.9:1) used directly as
+     text/icon color against pine (e.g. "Money found!", ShieldCheck). */
+  --gold-bright: #ffcb77;
 
-  --primary: #1d6e82;
+  --primary: #2584a7;
   --primary-foreground: #ffffff;
-  --secondary: #e6eeec;
+  --secondary: #f5ede0;
   --secondary-foreground: #16262a;
-  --muted: #e6eeec;
-  --muted-foreground: #576865;
-  --accent: #dcead1;
+  --muted: #f5ede0;
+  --muted-foreground: #6b6155;
+  --accent: #ffe9ea;
   --accent-foreground: #16262a;
 
   --success: #2f6b25;
@@ -120,20 +124,20 @@
   --clay: #b23b2c;
   --clay-foreground: #ffffff;
   --clay-soft: #f3dcd6;
-  /* "Teal" token — a brighter, lighter teal than primary, for a third pop
-     of variety (avatars, confetti) that still lives in the same family. */
-  --teal: #357893;
+  /* "Teal" token — now the palette's actual Turquoise, for the same third-
+     pop-of-variety role (avatars, confetti) it always had. */
+  --teal: #24e5d2;
   --destructive: #b23b2c;
   --destructive-foreground: #ffffff;
 
-  --border: #d5e2e0;
-  --input: #d5e2e0;
-  --ring: #1d6e82;
+  --border: #efe1cc;
+  --input: #efe1cc;
+  --ring: #2584a7;
 
-  --chart-1: #1d6e82;
+  --chart-1: #2584a7;
   --chart-2: #2f6b25;
-  --chart-3: #357893;
-  --chart-4: #576865;
+  --chart-3: #24e5d2;
+  --chart-4: #6b6155;
   --chart-5: #16262a;
 
   --radius: 1rem;

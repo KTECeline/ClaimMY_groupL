@@ -119,6 +119,18 @@ export const SEARCH_SOURCES = [
   'Court Settlements',
 ]
 
+/** Bank picker options — shared by the wizard's payout step and Settings → Bank accounts. */
+export const BANKS = [
+  'Maybank',
+  'CIMB Bank',
+  'Public Bank',
+  'RHB Bank',
+  'Hong Leong Bank',
+  'Bank Islam',
+  'Bank Simpanan Nasional',
+  'AmBank',
+]
+
 export const CLAIMS: Claim[] = [
   {
     id: 'CLM-2024-001',

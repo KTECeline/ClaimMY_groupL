@@ -57,6 +57,7 @@ export default function ClaimDetailPage({
     updateWizard,
     setLastRef,
     addSubmittedClaim,
+    wizard,
   } = useClaim()
   const { profile } = useSettings()
   const [submitting, setSubmitting] = useState(false)
@@ -158,13 +159,13 @@ export default function ClaimDetailPage({
             </p>
 
             <button
-              onClick={() => router.push('/settings/preferences')}
+              onClick={() => router.push('/settings/bank')}
               data-tap
               className="mt-3 flex w-full items-center gap-2 rounded-2xl border border-pine/20 bg-card px-4 py-3 text-left"
             >
               <span className="flex-1 text-sm font-semibold">
                 {t('claim.oneclick.bank', {
-                  bank: 'Maybank ••9012',
+                  bank: `${wizard.bankName} ••${wizard.bankAccount.replace(/\D/g, '').slice(-4)}`,
                 })}
               </span>
               <span className="shrink-0 text-sm font-bold text-pine">

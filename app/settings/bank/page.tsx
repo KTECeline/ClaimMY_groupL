@@ -1,22 +1,26 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'motion/react'
 import { Check, ChevronDown, Loader2, ShieldCheck } from 'lucide-react'
-import { StepWrapper } from '@/components/wizard/step-wrapper'
+import { AppShell } from '@/components/layout/app-shell'
 import { Field } from '@/components/wizard/field'
-import { ToggleRow } from '@/components/common/toggle-row'
-import { useClaim } from '@/context/claim-context'
 import { useLanguage } from '@/context/language-context'
+import { useClaim } from '@/context/claim-context'
+import { useToast } from '@/context/toast-context'
 import { BANKS } from '@/lib/mock-data'
 import { cn } from '@/lib/utils'
 
-/** S-14 · Bank Details — Step 6 of 6 */
-export default function WizardStep6() {
-  const router = useRouter()
+/**
+ * Settings → Bank accounts. The same account the claim wizard's payout step
+ * (S-14) reads and writes — there's only ever one saved account in this
+ * prototype, so this screen is that step's fields without the "continue"
+ * gate, reachable outside a claim instead of buried inside one.
+ */
+export default function BankAccountsPage() {
   const { t } = useLanguage()
-  const { wizard, updateWizard, editFromReview, setEditFromReview } = useClaim()
+  const { wizard, updateWizard } = useClaim()
+  const { show } = useToast()
   const [open, setOpen] = useState(false)
   const [verifying, setVerifying] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -30,25 +34,18 @@ export default function WizardStep6() {
     timer.current = setTimeout(() => {
       setVerifying(false)
       updateWizard({ bankVerified: true })
+      show({ message: t('bank.saved') })
     }, 1200)
   }
 
-  function next() {
-    if (editFromReview) setEditFromReview(false)
-    router.push('/claim/review')
-  }
-
   return (
-    <StepWrapper
-      title={t('wiz.s6.title')}
-      subtitle={t('wiz.s6.sub')}
-      disabled={!wizard.bankVerified}
-      disabledHint={t('wiz.s6.gate')}
-      onContinue={next}
-      continueLabel={editFromReview ? t('common.save') : undefined}
-    >
+    <AppShell title={t('profile.bank')} fab={false}>
+      <p className="text-sm leading-relaxed text-muted-foreground text-pretty">
+        {t('bank.sub')}
+      </p>
+
       {/* Bank picker */}
-      <div className="flex flex-col gap-1.5">
+      <div className="mt-5 flex flex-col gap-1.5">
         <span className="text-sm font-semibold">{t('wiz.s6.bank')}</span>
         <button
           onClick={() => setOpen((o) => !o)}
@@ -110,8 +107,7 @@ export default function WizardStep6() {
         />
       </div>
 
-      {/* Inline validation instead of failing at submit — the journey map's
-          USE stage lists "no inline validation" as a top pain point. */}
+      {/* Inline validation instead of failing at submit */}
       <div className="mt-3">
         <AnimatePresence mode="wait" initial={false}>
           {wizard.bankVerified ? (
@@ -147,15 +143,6 @@ export default function WizardStep6() {
           )}
         </AnimatePresence>
       </div>
-
-      <div className="mt-5 overflow-hidden rounded-2xl border border-border bg-card">
-        <ToggleRow
-          label={t('wiz.s6.save')}
-          hint={t('wiz.s6.save.hint')}
-          checked={wizard.saveBank}
-          onChange={(saveBank) => updateWizard({ saveBank })}
-        />
-      </div>
-    </StepWrapper>
+    </AppShell>
   )
 }

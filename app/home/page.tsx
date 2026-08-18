@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
 import { Users, FileText, Bell, LifeBuoy, ArrowRight, Search } from 'lucide-react'
 import { MobileContainer } from '@/components/layout/mobile-container'
@@ -31,6 +32,7 @@ const quickActions = [
  * single clear focal point instead of five boxes at equal weight.
  */
 export default function HomePage() {
+  const router = useRouter()
   const { t } = useLanguage()
   const { activeClaim, wizard, hasDraft } = useClaim()
   const { profile } = useSettings()
@@ -45,7 +47,14 @@ export default function HomePage() {
       {/* Pine header */}
       <div className="relative bg-pine px-5 pb-16 pt-12 text-pine-foreground">
         <div className="relative flex items-center justify-between">
-          <BrandWordmark className="text-pine-foreground" />
+          <button
+            onClick={() => router.push('/settings/help')}
+            aria-label={t('profile.help')}
+            data-tap
+            className="rounded-full transition-opacity hover:opacity-80 active:opacity-70"
+          >
+            <BrandWordmark className="text-pine-foreground" />
+          </button>
           <LanguageToggle light />
         </div>
         <p className="relative mt-7 text-sm font-medium text-pine-foreground/70">
