@@ -25,7 +25,7 @@ export default function OnboardingPage() {
 
   function next() {
     if (index < slides.length - 1) setIndex((i) => i + 1)
-    else router.push('/verify')
+    else router.push('/home')
   }
 
   return (
@@ -104,7 +104,7 @@ export default function OnboardingPage() {
               <div className="flex items-center justify-between">
                 <BrandMark tone="paper" className="size-9" />
                 <button
-                  onClick={() => router.push('/verify')}
+                  onClick={() => router.push('/home')}
                   className="text-sm font-semibold text-pine-foreground/70 hover:text-pine-foreground"
                 >
                   {t('onb.skip')}

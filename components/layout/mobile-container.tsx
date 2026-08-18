@@ -12,7 +12,17 @@ export function MobileContainer({
 }) {
   return (
     <div className="min-h-dvh w-full bg-[#0e1f1e] flex items-stretch justify-center sm:items-center sm:py-6">
-      <div className="relative w-full max-w-[400px] sm:rounded-[2.75rem] sm:border-[10px] sm:border-[#0e1f1e] sm:shadow-2xl overflow-hidden">
+      <div
+        // sm:[transform:...] establishes a new containing block for
+        // `position: fixed` descendants (PhoneOverlay — nav, help FAB, coach
+        // marks, vault lock). Without it, those overlays are fixed to the
+        // *browser* viewport, not this frame, so on wide "web" viewports
+        // where the frame doesn't fill the viewport height they float
+        // detached from the phone bezel with square corners instead of
+        // nesting inside its rounded edge. On mobile widths (no frame) this
+        // is inert since the frame already fills the viewport.
+        className="relative w-full max-w-[400px] sm:rounded-[2.75rem] sm:border-[10px] sm:border-[#0e1f1e] sm:shadow-2xl overflow-hidden sm:[transform:translateZ(0)]"
+      >
         {/* Notch — only on framed (sm+) view */}
         <div className="pointer-events-none absolute top-0 left-1/2 z-50 hidden h-6 w-32 -translate-x-1/2 rounded-b-2xl bg-[#0e1f1e] sm:block" />
         <div

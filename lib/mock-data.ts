@@ -110,6 +110,15 @@ export type EstateStep = {
 // IC used for the happy-path demo
 export const DEMO_IC = '900214-08-5127'
 
+/** The sources one search checks — shown on Home as reassurance and replayed as the checklist on the Searching screen. */
+export const SEARCH_SOURCES = [
+  'eGUMIS',
+  'KWSP (EPF)',
+  'Bank Negara',
+  'Insurance & Takaful',
+  'Court Settlements',
+]
+
 export const CLAIMS: Claim[] = [
   {
     id: 'CLM-2024-001',
@@ -170,6 +179,36 @@ export const CLAIMS: Claim[] = [
     description:
       'A savings account with no activity for over 7 years was classified as dormant and transferred to unclaimed moneys under the Act 1965.',
     requiredDocs: ['mykad', 'bank-statement', 'address'],
+  },
+  {
+    id: 'CLM-2024-005',
+    ic: DEMO_IC,
+    name: 'Ahmad bin Razali',
+    amount: 940.0,
+    type: 'dividend',
+    typeLabel: 'Unclaimed Dividend',
+    institution: 'CIMB Berhad',
+    institutionSlug: 'cimb',
+    year: 2022,
+    status: 'processing',
+    description:
+      'Share dividends declared under your name were never banked in. Your claim has already been submitted and is under review by CIMB.',
+    requiredDocs: ['mykad', 'bank-statement'],
+  },
+  {
+    id: 'CLM-2024-006',
+    ic: DEMO_IC,
+    name: 'Ahmad bin Razali',
+    amount: 1500.0,
+    type: 'epf',
+    typeLabel: 'KWSP Dividend Balance',
+    institution: 'KWSP (EPF)',
+    institutionSlug: 'kwsp',
+    year: 2018,
+    status: 'paid',
+    description:
+      'A residual EPF dividend balance was consolidated into your active i-Akaun. This record is kept for your reference only.',
+    requiredDocs: ['mykad', 'bank-statement'],
   },
 ]
 

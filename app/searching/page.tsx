@@ -8,9 +8,8 @@ import { MobileContainer } from '@/components/layout/mobile-container'
 import { BrandMark } from '@/components/common/brand-mark'
 import { useLanguage } from '@/context/language-context'
 import { useClaim } from '@/context/claim-context'
+import { SEARCH_SOURCES as sources } from '@/lib/mock-data'
 import { cn } from '@/lib/utils'
-
-const sources = ['eGUMIS', 'KWSP (EPF)', 'Bank Negara', 'Insurance & Takaful', 'Court Settlements']
 
 export default function SearchingPage() {
   const router = useRouter()

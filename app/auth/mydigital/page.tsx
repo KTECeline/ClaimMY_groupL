@@ -38,8 +38,11 @@ export default function MyDigitalIdPage() {
   function authorize() {
     setStage('verifying')
     setTimeout(() => {
+      // Pre-loads the verified result in the background so the "pulled via
+      // MyDigital ID" badge still shows once the user actually searches —
+      // but lands on Home first, not straight into Results.
       search(DEMO_IC, true)
-      router.push('/searching')
+      router.push('/home')
     }, 1300)
   }
 
