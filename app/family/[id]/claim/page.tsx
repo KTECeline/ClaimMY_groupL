@@ -8,6 +8,7 @@ import { AppShell } from '@/components/layout/app-shell'
 import { Stepper } from '@/components/common/stepper'
 import { DocTile } from '@/components/common/doc-tile'
 import { Callout } from '@/components/common/callout'
+import { GlossaryTerm } from '@/components/common/glossary-term'
 import { AppButton } from '@/components/ui/app-button'
 import { useLanguage } from '@/context/language-context'
 import { useSettings } from '@/context/settings-context'
@@ -81,8 +82,13 @@ export default function ClaimOnBehalfPage({
         className="mt-8"
       >
         <h2 className="flex items-center gap-2 font-display text-lg font-bold">
-          <ScrollText className="size-5 text-pine" />
-          {t('poa.upload.title')}
+          <ScrollText className="size-5 shrink-0 text-pine" />
+          <span>
+            {t('poa.upload.title.prefix')}
+            <GlossaryTerm definition={t('glossary.poa')}>
+              {t('doc.poa')}
+            </GlossaryTerm>
+          </span>
         </h2>
         <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground text-pretty">
           {t('poa.upload.body')}

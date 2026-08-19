@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
 import { Plus, Info, ArrowRight, User } from 'lucide-react'
 import { StepWrapper } from '@/components/wizard/step-wrapper'
+import { GlossaryTerm } from '@/components/common/glossary-term'
 import { useClaim } from '@/context/claim-context'
 import { useSettings } from '@/context/settings-context'
 import { useLanguage } from '@/context/language-context'
@@ -111,7 +112,17 @@ export default function WizardStep2() {
             <Info className="mt-0.5 size-4 shrink-0 text-pine" />
             <div className="min-w-0">
               <p className="text-sm font-semibold leading-snug">
-                {isEstate ? t('wiz.s2.estate.notice') : t('wiz.s2.poa')}
+                {isEstate ? (
+                  t('wiz.s2.estate.notice')
+                ) : (
+                  <>
+                    {t('wiz.s2.poa.prefix')}
+                    <GlossaryTerm definition={t('glossary.poa')}>
+                      {t('doc.poa')}
+                    </GlossaryTerm>
+                    {t('wiz.s2.poa.suffix')}
+                  </>
+                )}
               </p>
               {isEstate ? (
                 <button
