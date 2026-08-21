@@ -11,7 +11,7 @@ import { AppButton } from '@/components/ui/app-button'
 import { Amount } from '@/components/common/amount'
 import { useLanguage } from '@/context/language-context'
 import { useClaim } from '@/context/claim-context'
-import { TRACKED_CLAIMS, getInstitution } from '@/lib/mock-data'
+import { DEMO_IC, TRACKED_CLAIMS, getInstitution } from '@/lib/mock-data'
 
 /**
  * S-29 · Rejection Detail — the `↯` branch off submission.
@@ -28,7 +28,7 @@ export default function RejectedPage({
   const { id } = use(params)
   const router = useRouter()
   const { t } = useLanguage()
-  const { submittedClaims } = useClaim()
+  const { submittedClaims, setActiveClaim, resetWizard } = useClaim()
 
   const claim = [...submittedClaims, ...TRACKED_CLAIMS].find(
     (c) => c.id === id || c.ref === id,
@@ -53,6 +53,29 @@ export default function RejectedPage({
 
   const institution = getInstitution(claim.institutionSlug)
   const fixes = claim.howToFix ?? []
+
+  // The wizard gates every step on `activeClaim` — rejected claims never set
+  // one, so jumping straight to step-4 was bouncing back to Home. Rebuild it
+  // from the tracked claim and go straight to re-uploading docs, since that's
+  // what every current rejection reason asks for.
+  function startFix() {
+    setActiveClaim({
+      id: claim!.id,
+      ic: DEMO_IC,
+      name: 'Ahmad bin Razali',
+      amount: claim!.amount,
+      type: claim!.claimType,
+      typeLabel: claim!.type,
+      institution: claim!.institution,
+      institutionSlug: claim!.institutionSlug,
+      year: new Date().getFullYear(),
+      status: 'claimable',
+      description: claim!.rejectionReason ?? '',
+      requiredDocs: institution?.requiredDocs ?? ['mykad', 'bank-statement'],
+    })
+    resetWizard()
+    router.push('/claim/wizard/step-4')
+  }
 
   return (
     <AppShell title={t('reject.title')}>
@@ -113,10 +136,7 @@ export default function RejectedPage({
         </div>
 
         <div className="mt-7 flex flex-col gap-3">
-          <AppButton
-            size="block"
-            onClick={() => router.push('/claim/wizard/step-4')}
-          >
+          <AppButton size="block" onClick={startFix}>
             {t('reject.cta')}
             <ArrowRight className="size-5" />
           </AppButton>
