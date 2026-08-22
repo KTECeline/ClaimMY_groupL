@@ -42,6 +42,8 @@ export type AppNotification = {
   time: string
   group: 'today' | 'earlier'
   unread: boolean
+  /** Links a status/reminder notification to its claim, so opening it can resolve straight to the right detail screen. */
+  claimId?: string
 }
 
 export type TrackedClaim = {
@@ -333,6 +335,7 @@ export const NOTIFICATIONS: AppNotification[] = [
     time: '5h ago',
     group: 'today',
     unread: true,
+    claimId: 't1',
   },
   {
     id: 'n3',
@@ -361,6 +364,16 @@ export const NOTIFICATIONS: AppNotification[] = [
     time: '1w ago',
     group: 'earlier',
     unread: false,
+  },
+  {
+    id: 'n6',
+    type: 'status',
+    title: 'Claim needs your attention',
+    body: 'Your Prudential BSN Takaful insurance claim was not approved — see what to fix.',
+    time: '2d ago',
+    group: 'earlier',
+    unread: false,
+    claimId: 't4',
   },
 ]
 

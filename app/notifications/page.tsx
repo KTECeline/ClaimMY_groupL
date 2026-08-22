@@ -22,7 +22,12 @@ import { AppButton } from '@/components/ui/app-button'
 import { useLanguage } from '@/context/language-context'
 import { useClaim } from '@/context/claim-context'
 import { useToast } from '@/context/toast-context'
-import { NOTIFICATIONS, DEMO_IC, type AppNotification } from '@/lib/mock-data'
+import {
+  NOTIFICATIONS,
+  TRACKED_CLAIMS,
+  DEMO_IC,
+  type AppNotification,
+} from '@/lib/mock-data'
 import { cn } from '@/lib/utils'
 
 const ICONS = {
@@ -53,7 +58,7 @@ export default function NotificationsPage() {
   const router = useRouter()
   const { t } = useLanguage()
   const { show } = useToast()
-  const { search } = useClaim()
+  const { search, submittedClaims } = useClaim()
   const [items, setItems] = useState<AppNotification[]>(NOTIFICATIONS)
   const [loading, setLoading] = useState(true)
 
@@ -75,7 +80,16 @@ export default function NotificationsPage() {
       router.push('/notifications/found')
       return
     }
-    if (n.type === 'status' || n.type === 'reminder') router.push('/track')
+    if (n.type === 'status' || n.type === 'reminder') {
+      const claim = [...submittedClaims, ...TRACKED_CLAIMS].find(
+        (c) => c.id === n.claimId,
+      )
+      if (claim?.status === 'rejected') {
+        router.push(`/claim/${claim.id}/rejected`)
+        return
+      }
+      router.push(claim ? `/track/${claim.id}` : '/track')
+    }
   }
 
   function markAllRead() {
